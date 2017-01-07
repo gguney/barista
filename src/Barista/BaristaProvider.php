@@ -1,7 +1,6 @@
 <?php
-namespace Html;
+namespace Barista;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 class BaristaProvider extends ServiceProvider
 {
     /**
