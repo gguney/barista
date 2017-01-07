@@ -1,9 +1,9 @@
 {
-    "name": "gguney/http",
+    "name": "gguney/barista",
     "type": "library",
     "description": "Form Builder",
     "keywords": ["Form Builder" ],
-    "homepage": "https://github.com/gokhanguneygg/http",
+    "homepage": "https://github.com/gokhanguneygg/barista",
     "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Http\\": "src/Http"
+            "Barista\\": "src/Barista"
         }
     }
 }
