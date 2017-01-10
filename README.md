@@ -1,19 +1,19 @@
-# Http - Form Builder for Laravel
+# Barista - Form Builder for Laravel
 
-It builds forms for you.
+It builds forms for you. Yeah, I know Laravel has built in form support yet this package make the process even simpler.
 
 ### Requirements
 
-- Http works with PHP 5.6 or above.
-- Http only works with PostgreSQL and MySQL.
+- Barista works with PHP 5.6 or above.
 
 ### Installation
 
 ```bash
-$ composer require gguney/http
+$ composer require gguney/barista
 ```
 
 ### Usage
+To-Do
 
 ### Author
 
