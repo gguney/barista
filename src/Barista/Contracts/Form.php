@@ -10,7 +10,7 @@ form class tanımlanabilecek
 
 input olarak 
 */
-interface Form{
+interface BaristaBuilder{
 
 }
 ?>
