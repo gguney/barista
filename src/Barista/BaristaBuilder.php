@@ -64,7 +64,6 @@ class BaristaBuilder{
 
         	if ($errors->has($formField))
 				$htmlFields .=self::error($errors->first($formField), ['class'=>'help-block']);
-			
 			$htmlFields .= '</div>';
 		}
 		return $htmlFields;
