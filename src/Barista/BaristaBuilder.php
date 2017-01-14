@@ -17,6 +17,7 @@ DELETE		/nerds/{id}			destroy				nerds.destroy
 class BaristaBuilder{
 
 	protected static $RESERVED_METHODS = ['POST', 'PUT','PATCH', 'DELETE'];
+	protected static $RESERVED_ATTRIBUTES = [];
 	public static function open($array )
 	{
 		$method = strtoupper($array['method']);
@@ -38,99 +39,56 @@ class BaristaBuilder{
 
 	}
 
-	public static function close()
+	public static function close($attributes)
 	{
-		return '<button type="submit" class="btn btn-primary">Submit</button></form>';
+		return '<button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></form>';
 	}
-	public static function buildFromDM($dataModel,$item = null, $errors)
+	public static function buildFromDM($dataModel, $item = null, $errors)
 	{
 		$htmlFields = "";
-
 		$columns = $dataModel->getColumns();
 		$formFields = $dataModel->getFormFields();
-		$foreigns = $dataModel->getForeigns();
-		$foreignsData = $dataModel->getForeignsData();
 
 		foreach ($formFields as $formField) {
 			if(isset( $columns[$formField]))
 				$column = $columns[$formField];
-			else
-			{
-				
-				$column = new Column();
-				$column->setName($formField);
-				$column->setId($formField);
-				$column->setLabel( ucwords($formField) );
-				$column->setRequired(true);
-				$column->setEditable(true);
-				$column->setType('text');
-				
-			}
+
+			$attributes = $column->getAttributes();
+
 			$error = ($errors->has($formField))?'has-error':'';
 			$htmlFields .= '<div class="form-group '.$error.'">';
-			$htmlFields .='<label class="control-label" for="'.$column->getName().'">';
+			$htmlFields .= self::label($attributes['name'],$attributes['label']);
 
-			$htmlFields .= $column->getLabel();
-			$htmlFields .= ($column->getRequired())?'  <strong class="text-danger">*</strong>':'';
-			$htmlFields .= '</label>';
-			if(isset($foreigns[$column->getName()] ) && $foreignsData[$column->getName()] )
-			{
-				$htmlFields .='<select class="form-control" name="'.$column->getName().'">';
-				foreach($foreignsData[$column->getName()] as $foreignData)
-				{	
-					if(isset($item))
-					{
-						$columnName = $column->getName();
-						if($item->$columnName == $foreignData->id)
-							$htmlFields .='<option value="'.$foreignData->id.'" selected>'. $foreignData->name.'</option>';
-						else
-							$htmlFields .='<option value="'.$foreignData->id.'">'. $foreignData->name.'</option>';
-
-					}
-					else
-					{
-						$htmlFields .='<option value="'.$foreignData->id.'">'. $foreignData->name.'</option>';
-
-					}
-				} 
-				$htmlFields .='<select>';
-			}
-			else
-			{
-				if($column->getMaxLength() > 255)
-					$htmlFields .= '<textarea ';
-				else
-				{
-					$htmlFields .= '<input ';
-					$htmlFields .= 'type="'.$column->getType().'" ';
-				}
-				$htmlFields .='class="form-control" name="'.$column->getName().'" id="'.$column->getName().'" ';
-				$htmlFields .='placeholder="Enter '.$column->getLabel().'" ';
-				if(isset($item))
-				{
-					$colName = $column->getName();
-					$value = $item->$colName;
-					$htmlFields .='value="'.$value.'"';
-				}
-				else
-					$htmlFields .='value="'.old($column->getName()).'"';
-
-				if(!$column->getEditable())
-					$htmlFields .= 'disabled="disabled" ';
-				if($column->getMaxLength() > 255)
-					$htmlFields .='</textarea>';
-				else
-					$htmlFields .=' />';				
-			}
-
+			$htmlFields .= (isset($attributes['required']))?self::required($attributes['required']):null;
+			$htmlFields .= self::detectInput($dataModel, $attributes, $item);
 
         	if ($errors->has($formField))
-          		$htmlFields .= '<span class="help-block">'.$errors->first($formField).'</span>';
-    
+				$htmlFields .=self::error($errors->first($formField), ['class'=>'help-block']);
+			
 			$htmlFields .= '</div>';
 		}
-
 		return $htmlFields;
+	}
+	public static function detectInput($dataModel, $attributes, $item)
+	{
+
+		$foreigns = $dataModel->getForeigns();
+		$foreignsData = $dataModel->getForeignsData();
+		$input = "";
+		$name = $attributes['name'];
+		$value = (isset($item))?$item->$name:old($name);
+
+		if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
+			$input .= self::select($name, $value, $foreignsData[$attributes['name']], $attributes);
+		else if($attributes['maxlength'] > 255)
+			$input .= self::textarea($name , $value, $attributes);
+		else if($attributes['maxlength'] == 1)
+			$input .= self::checkbox($name , $value, $attributes);
+		else
+			$input .= self::input($name , $value, $attributes);
+		
+		return $input;
+
 	}
 	public static function buildShowFromDM($dataModel, $item)
 	{
@@ -139,7 +97,7 @@ class BaristaBuilder{
 		foreach($columns as $key => $column)
 		{
 			$value = ($item->$key != null)?$item->$key : '-';
-			$htmlFields .='<div class="col-md-4"><strong>'.$column->getLabel().'</strong> </div><div class="col-md-8">'.$value.'</div>';
+			$htmlFields .='<div class="col-md-4"><strong>'.$column->get('label').'</strong> </div><div class="col-md-8">'.e($value).'</div>';
 		}
 		return $htmlFields;
 	}
@@ -152,8 +110,8 @@ class BaristaBuilder{
 		$htmlFields .='<thead class="thead-inverse">';
 		foreach($tableFields as $tableField)
 		{
-			$columnName = $columns[$tableField]->getName();
-			$title = $columns[ $tableField ]->getLabel();
+			$columnName = $columns[$tableField]->get('name');
+			$title = $columns[ $tableField ]->get('label');
 			$htmlFields .= '<th>'.$title.'</th>';
 		}
 		$htmlFields .= '<th>Actions</th>';
@@ -166,18 +124,16 @@ class BaristaBuilder{
 			$htmlFields .= '<tr >';
 			foreach ($tableFields as $tableField)
 			{
-				$columnName = $columns[$tableField]->getName();
+				$columnName = $columns[$tableField]->get('name');
 				$value = $item->$columnName;
 				$htmlFields .= '<td>'.$value.'</td>';
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-			$htmlFields .= '<a class="btn btn-primary btn-sm" style="margin-right:6px" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
-			$htmlFields .= '<a class="btn btn-success btn-sm" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
-			$htmlFields .= '<form method="POST" class="btn btn-sm" style="margin-left:-6px" action="/'.lcfirst($dataModel->getName()).'/'.$item->id.'">
-                     '.csrf_field().method_field('DELETE').'
-                      <button type="submit" class="btn btn-danger btn-sm ">Delete</button>
-                    </form>';
+			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
+			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
+			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>lcfirst($dataModel->getName()) ]);
+			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>'Delete']);
 			$htmlFields .= '</tr>';
 		}	
 		$htmlFields .= '</tbody>';
@@ -186,11 +142,80 @@ class BaristaBuilder{
 
 		return $htmlFields;
 	}
-
-
-	public static function input($type)
+	public static function checkbox ($name, $value, $attributes = null)
 	{
+		if(!isset($attributes['class']))
+			$attributes['class'] = 'checkbox';
+		$input = '<input'.self::attributesToString($attributes).' value="'.e($value).'"/>';
+		return $input;
+	}
+	public static function input ($name, $value, $attributes = null)
+	{
+		if(!isset($attributes['class']))
+			$attributes['class'] = 'form-control';
+		$input = '<input'.self::attributesToString($attributes).' value="'.e($value).'"/>';
+		return $input;
+	}
 
+	public static function textarea($name, $value, $attributes = null)
+	{
+		if(!isset($attributes['class']))
+			$attributes['class'] = 'form-control';
+		return '<textarea'.self::attributesToString($attributes).' rows=3>'.e($value).'</textarea>';
+	}
+
+	public static function select($name, $value , $options ,$attributes = null)
+	{	
+		$select = "";
+		$select .= '<select class="form-control" name="'.$attributes['name'].'">';
+		foreach($options as $option)
+		{	
+			if(isset($value) && $value == $option->id)
+				$select .= self::option($option->name, $option->id, 'selected');
+			else
+				$select .= self::option($option->name, $option->id, '');
+		} 
+		$select .='</select>';
+		return $select;
+
+	}
+	public static function option($name, $value, $selected)
+	{
+		return '<option value="'.e($value).'"'.$selected.'>'. $name.'</option>';
+
+	}
+	public static function link($url, $value, $attributes)
+	{
+		return '<a href="'.$url.'"'.self::attributesToString($attributes).'>'.e($value).'</a>';
+	}
+	public static function label($name, $value ,$attributes = null)
+	{
+		return '<label class="control-label" for="'.$name.'"'.self::attributesToString($attributes).'>'.e($value).'</label>';
+	}
+	public static function required ($required = null)
+	{
+		return ($required == 'required')?' <strong class="text-danger">*</strong>':'';
+	}
+	public static function error($error, $attributes = null)
+	{
+		return '<span'.self::attributesToString($attributes).'>'.$error.'</span>';
+
+	}	
+
+	public static function attributesToString($attributes)
+	{
+		$string = "";
+		if(!isset($attributes))
+			return $string;
+		foreach($attributes as $key=>$value )
+		{
+			$string .= self::toAttribute($key, $value);
+		}
+		return $string;
+	}
+	private static function toAttribute($key, $value)
+	{
+		return ' '.$key.'="'.e($value).'"'; 
 	}
 	/*
 	  "id" => {#176 ▼
