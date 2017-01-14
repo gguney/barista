@@ -25,13 +25,13 @@ class BaristaBuilder{
 
 		switch($method){
 			case 'PUT':
-				$action = '/'.$array['url'].'/'.$array['item']->id;
+				$action = config('app.admin_prefix').'/'.$array['url'].'/'.$array['item']->id;
 				break;
 			case 'DELETE':
-				$action = '/'.$array['url'].'/'.$array['item']->id;
+				$action = config('app.admin_prefix').'/'.$array['url'].'/'.$array['item']->id;
 				break;
 			default:
-				$action = '/'.$array['url'];
+				$action = config('app.admin_prefix').'/'.$array['url'];
 				break;
 		}
 
