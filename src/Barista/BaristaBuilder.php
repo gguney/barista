@@ -60,24 +60,29 @@ class BaristaBuilder{
 			$htmlFields .= self::label($attributes['name'],$attributes['label']);
 
 			$htmlFields .= (isset($attributes['required']))?self::required($attributes['required']):null;
-			$htmlFields .= self::detectInput($dataModel, $attributes, $item);
-
+			$htmlFields .= self::detectInput($dataModel, $attributes, $formField, $item);
         	if ($errors->has($formField))
 				$htmlFields .=self::error($errors->first($formField), ['class'=>'help-block']);
 			$htmlFields .= '</div>';
 		}
 		return $htmlFields;
 	}
-	public static function detectInput($dataModel, $attributes, $item)
+	public static function detectInput($dataModel, $attributes, $formField, $item)
 	{
 
 		$foreigns = $dataModel->getForeigns();
 		$foreignsData = $dataModel->getForeignsData();
+		$columns = $dataModel->getColumns();
+
 		$input = "";
 		$name = $attributes['name'];
 		$value = (isset($item))?$item->$name:old($name);
-
-		if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
+		if(isset($columns[$formField]->getSpecialType()))
+		{
+			$attributes[$name]->set('type',$columns[$name]->getSpecialType());
+			$input .= self::input($name , $value, $attributes);
+		}
+		else if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
 			$input .= self::select($name, $value, $foreignsData[$attributes['name']], $attributes);
 		else if($attributes['maxlength'] > 255)
 			$input .= self::textarea($name , $value, $attributes);
