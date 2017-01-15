@@ -77,7 +77,7 @@ class BaristaBuilder{
 		$input = "";
 		$name = $attributes['name'];
 		$value = (isset($item))?$item->$name:old($name);
-		if(isset($columns[$formField]->getSpecialType()))
+		if($columns[$formField]->getSpecialType() !== null)
 		{
 			$attributes[$name]->set('type',$columns[$name]->getSpecialType());
 			$input .= self::input($name , $value, $attributes);
