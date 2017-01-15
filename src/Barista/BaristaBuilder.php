@@ -129,9 +129,9 @@ class BaristaBuilder{
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
-			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
-			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>lcfirst($dataModel->getName()) ]);
+			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.config('app.admin_prefix').'/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
+			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.config('app.admin_prefix').'/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
+			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>config('app.admin_prefix').'/'.lcfirst($dataModel->getName()) ]);
 			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>'Delete']);
 			$htmlFields .= '</tr>';
 		}	
