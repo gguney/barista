@@ -28,7 +28,7 @@ class BaristaBuilder{
 				$action = '/'.$array['url'].'/'.$array['item']->id;
 				break;
 			case 'DELETE':
-				$action = '/'.$array['url'].'/'.$array['item']->id;
+				$action = $array['url'].'/'.$array['item']->id;
 				break;
 			default:
 				$action ='/'.$array['url'];
