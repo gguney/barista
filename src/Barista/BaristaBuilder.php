@@ -3,6 +3,7 @@ namespace Barista;
 
 use ModelCourier\ColumnHelper\Column;
 use Illuminate\Session\Store as Session;
+use Illuminate\Support\Facades\Storage;
 
 /*
 HTTP Verb	Path (URL)			Action (Method)		Route Name
@@ -22,6 +23,7 @@ class BaristaBuilder{
 	{
 		$method = strtoupper($array['method']);
 		$method = (in_array($method ,self::$RESERVED_METHODS))?$method :'POST';
+		$files = (isset($array['files']) && $array['files'] == true)? 'enctype="multipart/form-data"':'';
 
 		switch($method){
 			case 'PUT':
@@ -34,9 +36,7 @@ class BaristaBuilder{
 				$action ='/'.$array['url'];
 				break;
 		}
-
-		return '<form method="POST" action="'.$action.'">'.csrf_field().method_field($method);
-
+		return '<form method="POST" action="'.$action.'" '.$files.'>'.csrf_field().method_field($method);
 	}
 
 	public static function close($attributes)
@@ -79,7 +79,7 @@ class BaristaBuilder{
 		$value = (isset($item))?$item->$name:old($name);
 		if($columns[$formField]->getSpecialType() !== null)
 		{
-			$attributes[$name]->set('type',$columns[$name]->getSpecialType());
+			$columns[$formField]->set('type',$columns[$formField]->getSpecialType());
 			$input .= self::input($name , $value, $attributes);
 		}
 		else if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
@@ -101,7 +101,16 @@ class BaristaBuilder{
 		foreach($columns as $key => $column)
 		{
 			$value = ($item->$key != null)?$item->$key : '-';
-			$htmlFields .='<div class="col-md-4"><strong>'.$column->get('label').'</strong> </div><div class="col-md-8">'.e($value).'</div>';
+			$htmlFields .= '<div class="col-md-4"><strong>'.$column->get('label').'</strong> </div>';
+			$htmlFields .= '<div class="col-md-8">';
+			if( $column->get('type') == 'file' )
+			{
+				$file = Storage::url($value);
+				$htmlFields .= '<img src="'.$file.'" /img>';
+			}
+			else
+				$htmlFields .= e($value);
+			$htmlFields .= '</div>';
 		}
 		return $htmlFields;
 	}
@@ -110,6 +119,9 @@ class BaristaBuilder{
 		$htmlFields = "";
 		$columns = $dataModel->getColumns();
 		$tableFields = $dataModel->getTableFields();
+
+		$prefixWithSlash = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?'/'.config('app.admin_prefix'):'';
+		$prefix = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?config('app.admin_prefix'):'';
 		$htmlFields .='<table class="table compact" id="myTable">';
 		$htmlFields .='<thead class="thead-inverse">';
 		foreach($tableFields as $tableField)
@@ -130,13 +142,13 @@ class BaristaBuilder{
 			{
 				$columnName = $columns[$tableField]->get('name');
 				$value = $item->$columnName;
-				$htmlFields .= '<td>'.$value.'</td>';
+				$htmlFields .= '<td>'.e($value).'</td>';
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="/'.config('app.admin_prefix').'/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
-			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="/'.config('app.admin_prefix').'/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
-			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>config('app.admin_prefix').'/'.lcfirst($dataModel->getName()) ]);
+			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.'/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
+			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.'/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
+			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>$prefix.'/'.lcfirst($dataModel->getName()) ]);
 			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>'Delete']);
 			$htmlFields .= '</tr>';
 		}	
