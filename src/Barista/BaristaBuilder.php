@@ -157,10 +157,9 @@ class BaristaBuilder{
 	}
 
 	public static function textarea($name, $value, $attributes = null)
-	{/*
+	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = 'form-control';
-			*/
 		return '<textarea'.self::attributesToString($attributes).'>'.e($value).'</textarea>';
 	}
 
