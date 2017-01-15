@@ -25,13 +25,13 @@ class BaristaBuilder{
 
 		switch($method){
 			case 'PUT':
-				$action = config('app.admin_prefix').'/'.$array['url'].'/'.$array['item']->id;
+				$action = '/'.$array['url'].'/'.$array['item']->id;
 				break;
 			case 'DELETE':
-				$action = config('app.admin_prefix').'/'.$array['url'].'/'.$array['item']->id;
+				$action = '/'.$array['url'].'/'.$array['item']->id;
 				break;
 			default:
-				$action = config('app.admin_prefix').'/'.$array['url'];
+				$action ='/'.$array['url'];
 				break;
 		}
 
@@ -198,9 +198,7 @@ class BaristaBuilder{
 	public static function error($error, $attributes = null)
 	{
 		return '<span'.self::attributesToString($attributes).'>'.$error.'</span>';
-
 	}	
-
 	public static function attributesToString($attributes)
 	{
 		$string = "";
