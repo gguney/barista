@@ -73,17 +73,15 @@ class BaristaBuilder{
 		$foreigns = $dataModel->getForeigns();
 		$foreignsData = $dataModel->getForeignsData();
 		$columns = $dataModel->getColumns();
-
 		$input = "";
 		$name = $attributes['name'];
 		$value = (isset($item))?$item->$name:old($name);
-		if($columns[$formField]->getSpecialType() !== null)
-		{
-			$columns[$formField]->set('type',$columns[$formField]->getSpecialType());
-			$input .= self::input($name , $value, $attributes);
-		}
-		else if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
+		if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
 			$input .= self::select($name, $value, $foreignsData[$attributes['name']], $attributes);
+		else if($attributes['name'] == 'path')
+		{
+			$input .= self::file($name , $value, $attributes);
+		}
 		else if($attributes['maxlength'] > 255)
 			$input .= self::textarea($name , $value, $attributes);
 		else if($attributes['maxlength'] == 1)
@@ -105,7 +103,7 @@ class BaristaBuilder{
 			$htmlFields .= '<div class="col-md-8">';
 			if( $column->get('type') == 'file' )
 			{
-				$file = Storage::url($value);
+				$file = (str_contains($value, ['http', 'https']))?$value:Storage::url($value);
 				$htmlFields .= '<img src="'.$file.'" /img>';
 			}
 			else
@@ -162,14 +160,24 @@ class BaristaBuilder{
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = 'checkbox';
-		$input = '<input'.self::attributesToString($attributes).' value="'.e($value).'"/>';
+		$input = '<input'.self::ats($attributes).' value="'.e($value).'"/>';
 		return $input;
+	}
+	public static function file ($name, $value, $attributes = null)
+	{
+		$file = "";
+		$file .= self::input($name , $value, $attributes);
+		$attributes['name'] = $name.'_url';
+		$attributes['type'] = 'text';
+		$file .= self::input($name , $value, $attributes);
+		return $file;
+
 	}
 	public static function input ($name, $value, $attributes = null)
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = 'form-control';
-		$input = '<input'.self::attributesToString($attributes).' value="'.e($value).'"/>';
+		$input = '<input'.self::ats($attributes).' value="'.e($value).'"/>';
 		return $input;
 	}
 
@@ -177,7 +185,7 @@ class BaristaBuilder{
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = 'form-control';
-		return '<textarea'.self::attributesToString($attributes).'>'.e($value).'</textarea>';
+		return '<textarea'.self::ats($attributes).'>'.e($value).'</textarea>';
 	}
 
 	public static function select($name, $value , $options ,$attributes = null)
@@ -202,11 +210,11 @@ class BaristaBuilder{
 	}
 	public static function link($url, $value, $attributes)
 	{
-		return '<a href="'.$url.'"'.self::attributesToString($attributes).'>'.e($value).'</a>';
+		return '<a href="'.$url.'"'.self::ats($attributes).'>'.e($value).'</a>';
 	}
 	public static function label($name, $value ,$attributes = null)
 	{
-		return '<label class="control-label" for="'.$name.'"'.self::attributesToString($attributes).'>'.e($value).'</label>';
+		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.e($value).'</label>';
 	}
 	public static function required ($required = null)
 	{
@@ -214,9 +222,9 @@ class BaristaBuilder{
 	}
 	public static function error($error, $attributes = null)
 	{
-		return '<span'.self::attributesToString($attributes).'>'.$error.'</span>';
+		return '<span'.self::ats($attributes).'>'.$error.'</span>';
 	}	
-	public static function attributesToString($attributes)
+	public static function ats($attributes)
 	{
 		$string = "";
 		if(!isset($attributes))
