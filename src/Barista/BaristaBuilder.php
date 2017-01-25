@@ -104,7 +104,7 @@ class BaristaBuilder{
 			if( $column->get('type') == 'file' )
 			{
 				$file = (str_contains($value, ['http', 'https']))?$value:Storage::url($value);
-				$htmlFields .= '<img src="'.$file.'" /img>';
+				$htmlFields .= '<img src="'.$file.'" style="width:300px;height:auto"/img>';
 			}
 			else
 				$htmlFields .= e($value);
