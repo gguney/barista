@@ -27,13 +27,13 @@ class BaristaBuilder{
 
 		switch($method){
 			case 'PUT':
-				$action = '/'.$array['url'].'/'.$array['item']->id;
+				$action = $array['url'].'/'.$array['item']->id;
 				break;
 			case 'DELETE':
 				$action = $array['url'].'/'.$array['item']->id;
 				break;
 			default:
-				$action ='/'.$array['url'];
+				$action = $array['url'];
 				break;
 		}
 		return '<form method="POST" action="'.$action.'" '.$files.'>'.csrf_field().method_field($method);
@@ -118,7 +118,7 @@ class BaristaBuilder{
 		$columns = $dataModel->getColumns();
 		$tableFields = $dataModel->getTableFields();
 
-		$prefixWithSlash = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?'/'.config('app.admin_prefix'):'';
+		$prefixWithSlash = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?'/'.config('app.admin_prefix').'/':'';
 		$prefix = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?config('app.admin_prefix'):'';
 		$htmlFields .='<table class="table compact" id="myTable">';
 		$htmlFields .='<thead class="thead-inverse">';
@@ -144,8 +144,8 @@ class BaristaBuilder{
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.'/'.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
-			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.'/'.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
+			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
+			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
 			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>$prefix.'/'.lcfirst($dataModel->getName()) ]);
 			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>'Delete']);
 			$htmlFields .= '</tr>';
