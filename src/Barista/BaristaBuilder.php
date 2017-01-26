@@ -122,18 +122,21 @@ class BaristaBuilder{
 		$prefix = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?config('app.admin_prefix'):'';
 		$htmlFields .='<table class="table compact" id="myTable">';
 		$htmlFields .='<thead class="thead-inverse">';
-		$editText = isset(trans('general.Edit'))?trans('general.Edit'):'Edit';
-		$deleteText = isset(trans('general.Delete'))?trans('general.Delete'):'Delete';
-		$createText = isset(trans('general.Create'))?trans('general.Create'):'Create';
-		$updateText = isset(trans('general.Update'))?trans('general.Update'):'Update';
-		$showText = isset(trans('general.Show'))?trans('general.Show'):'Show';
+
+
+		
+		$editText = (\Lang::has('general.Edit'))?trans('general.Edit'):'Edit';
+		$deleteText = (\Lang::has('general.Delete'))?trans('general.Delete'):'Delete';
+		$createText = (\Lang::has('general.Create'))?trans('general.Create'):'Create';
+		$updateText = (\Lang::has('general.Update'))?trans('general.Update'):'Update';
+		$showText = (\Lang::has('general.Show'))?trans('general.Show'):'Show';
 
 
 		foreach($tableFields as $tableField)
 		{
 			$columnName = $columns[$tableField]->get('name');
 			$title = $columns[ $tableField ]->get('label');
-			$value = isset(trans('general.'.e($title)))?trans('general.'.e($title)):e($title);
+			$value = (\Lang::has('general.'.e($title)))?trans('general.'.e($title)):e($title);
 			$htmlFields .= '<th>'.$value.'</th>';
 		}
 		$htmlFields .= '<th>Actions</th>';
@@ -223,7 +226,7 @@ class BaristaBuilder{
 	}
 	public static function label($name, $value ,$attributes = null)
 	{
-		$value = isset(trans('general.'.e($value)))?trans('general.'.e($value)):e($value);
+		$value = (\Lang::has('general.'.e($value)))?trans('general.'.e($value)):e($value);
 		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.$value.'</label>';
 	}
 	public static function required ($required = null)
