@@ -122,11 +122,19 @@ class BaristaBuilder{
 		$prefix = ( config('app.admin_prefix') !==null && config('app.admin_prefix') != '')?config('app.admin_prefix'):'';
 		$htmlFields .='<table class="table compact" id="myTable">';
 		$htmlFields .='<thead class="thead-inverse">';
+		$editText = isset(trans('general.Edit'))?trans('general.Edit'):'Edit';
+		$deleteText = isset(trans('general.Delete'))?trans('general.Delete'):'Delete';
+		$createText = isset(trans('general.Create'))?trans('general.Create'):'Create';
+		$updateText = isset(trans('general.Update'))?trans('general.Update'):'Update';
+		$showText = isset(trans('general.Show'))?trans('general.Show'):'Show';
+
+
 		foreach($tableFields as $tableField)
 		{
 			$columnName = $columns[$tableField]->get('name');
 			$title = $columns[ $tableField ]->get('label');
-			$htmlFields .= '<th>'.$title.'</th>';
+			$value = isset(trans('general.'.e($title)))?trans('general.'.e($title)):e($title);
+			$htmlFields .= '<th>'.$value.'</th>';
 		}
 		$htmlFields .= '<th>Actions</th>';
 		$htmlFields .= '</thead>';
@@ -144,10 +152,11 @@ class BaristaBuilder{
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">Edit</a>';
-			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'">Show</a>';
+
+			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">'.$editText.'</a>';
+			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'">'.$showText.'</a>';
 			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>$prefix.'/'.lcfirst($dataModel->getName()) ]);
-			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>'Delete']);
+			$htmlFields .= self::close(['class'=>'btn btn-danger btn-sm"', 'title'=>$deleteText]);
 			$htmlFields .= '</tr>';
 		}	
 		$htmlFields .= '</tbody>';
@@ -214,7 +223,8 @@ class BaristaBuilder{
 	}
 	public static function label($name, $value ,$attributes = null)
 	{
-		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.trans('all.'.e($value)).'</label>';
+		$value = isset(trans('general.'.e($value)))?trans('general.'.e($value)):e($value);
+		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.$value.'</label>';
 	}
 	public static function required ($required = null)
 	{
