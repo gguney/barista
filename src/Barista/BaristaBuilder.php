@@ -99,7 +99,9 @@ class BaristaBuilder{
 		foreach($columns as $key => $column)
 		{
 			$value = ($item->$key != null)?$item->$key : '-';
-			$htmlFields .= '<div class="col-md-4"><strong>'.$column->get('label').'</strong> </div>';
+			$text = (\Lang::has('general.'.$column->get('label')))?trans('general.'.$column->get('label')):$column->get('label');
+
+			$htmlFields .= '<div class="col-md-4"><strong>'.$text.'</strong> </div>';
 			$htmlFields .= '<div class="col-md-8">';
 			if( $column->get('type') == 'file' )
 			{
@@ -123,13 +125,12 @@ class BaristaBuilder{
 		$htmlFields .='<table class="table compact" id="myTable">';
 		$htmlFields .='<thead class="thead-inverse">';
 
-
-		
 		$editText = (\Lang::has('general.Edit'))?trans('general.Edit'):'Edit';
 		$deleteText = (\Lang::has('general.Delete'))?trans('general.Delete'):'Delete';
 		$createText = (\Lang::has('general.Create'))?trans('general.Create'):'Create';
 		$updateText = (\Lang::has('general.Update'))?trans('general.Update'):'Update';
 		$showText = (\Lang::has('general.Show'))?trans('general.Show'):'Show';
+		$actionsText = (\Lang::has('general.Actions'))?trans('general.Actions'):'Actions';
 
 
 		foreach($tableFields as $tableField)
@@ -139,7 +140,7 @@ class BaristaBuilder{
 			$value = (\Lang::has('general.'.e($title)))?trans('general.'.e($title)):e($title);
 			$htmlFields .= '<th>'.$value.'</th>';
 		}
-		$htmlFields .= '<th>Actions</th>';
+		$htmlFields .= '<th>'.$actionsText.'</th>';
 		$htmlFields .= '</thead>';
 		$htmlFields .= '<tbody>';
 
