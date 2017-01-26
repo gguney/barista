@@ -214,7 +214,7 @@ class BaristaBuilder{
 	}
 	public static function label($name, $value ,$attributes = null)
 	{
-		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.e($value).'</label>';
+		return '<label class="control-label" for="'.$name.'"'.self::ats($attributes).'>'.trans('all.'.e($value)).'</label>';
 	}
 	public static function required ($required = null)
 	{
