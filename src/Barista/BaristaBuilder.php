@@ -96,21 +96,26 @@ class BaristaBuilder{
 	{
 		$htmlFields = "";
 		$columns = $dataModel->getColumns();
+		$hiddenFields = $dataModel->getHiddenFields();
 		foreach($columns as $key => $column)
 		{
-			$value = ($item->$key != null)?$item->$key : '-';
-			$text = (\Lang::has('general.'.$column->get('label')))?trans('general.'.$column->get('label')):$column->get('label');
-
-			$htmlFields .= '<div class="col-md-4"><strong>'.$text.'</strong> </div>';
-			$htmlFields .= '<div class="col-md-8">';
-			if( $column->get('type') == 'file' )
+	
+			if(!in_array($column->get('name'), $hiddenFields ))
 			{
-				$file = (str_contains($value, ['http', 'https']))?$value:Storage::url($value);
-				$htmlFields .= '<img src="'.$file.'" style="width:300px;height:auto"/img>';
+				$value = ($item->$key != null)?$item->$key : '-';
+				$text = (\Lang::has('general.'.$column->get('label')))?trans('general.'.$column->get('label')):$column->get('label');
+
+				$htmlFields .= '<div class="col-md-4"><strong>'.$text.'</strong> </div>';
+				$htmlFields .= '<div class="col-md-8">';
+				if( $column->get('type') == 'file' )
+				{
+					$file = (str_contains($value, ['http', 'https']))?$value:Storage::url($value);
+					$htmlFields .= '<img src="'.$file.'" style="width:300px;height:auto"/img>';
+				}
+				else
+					$htmlFields .= e($value);
+				$htmlFields .= '</div>';
 			}
-			else
-				$htmlFields .= e($value);
-			$htmlFields .= '</div>';
 		}
 		return $htmlFields;
 	}
