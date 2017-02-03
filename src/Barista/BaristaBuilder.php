@@ -19,6 +19,7 @@ class BaristaBuilder{
 
 	protected static $RESERVED_METHODS = ['POST', 'PUT','PATCH', 'DELETE'];
 	protected static $RESERVED_ATTRIBUTES = [];
+	
 	public static function open($array )
 	{
 		$method = strtoupper($array['method']);
@@ -78,13 +79,13 @@ class BaristaBuilder{
 		$value = (isset($item))?$item->$name:old($name);
 		if(isset($foreigns[$attributes['name']] ) && $foreignsData[$attributes['name']] )
 			$input .= self::select($name, $value, $foreignsData[$attributes['name']], $attributes);
-		else if($attributes['name'] == 'path')
+		else if($attributes['type'] == 'file')
 		{
 			$input .= self::file($name , $value, $attributes);
 		}
 		else if($attributes['maxlength'] > 255)
 			$input .= self::textarea($name , $value, $attributes);
-		else if($attributes['maxlength'] == 1)
+		else if($attributes['type'] == 'checkbox')
 			$input .= self::checkbox($name , $value, $attributes);
 		else
 			$input .= self::input($name , $value, $attributes);
@@ -161,7 +162,6 @@ class BaristaBuilder{
 
 			}
 			$htmlFields .= '<td class="td w-clearfix" >';
-
 			$htmlFields .= '<a class="btn btn-primary btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'/edit">'.$editText.'</a>';
 			$htmlFields .= '<a class="btn btn-success btn-sm pull-left" style="margin-right:6px" href="'.$prefixWithSlash.lcfirst($dataModel->getName()).'/'.$item->id.'">'.$showText.'</a>';
 			$htmlFields .= self::open([ 'method'=>'DELETE', 'item'=>$item, 'url'=>$prefix.'/'.lcfirst($dataModel->getName()) ]);
@@ -178,7 +178,8 @@ class BaristaBuilder{
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = 'checkbox';
-		$input = '<input'.self::ats($attributes).' value="'.e($value).'"/>';
+		$checked = ($value == 1)?'checked="checked"':'';
+		$input = '<input'.self::ats($attributes).' value="'.e($value).'" '.$checked.'/>';
 		return $input;
 	}
 	public static function file ($name, $value, $attributes = null)
