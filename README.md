@@ -13,7 +13,20 @@ $ composer require gguney/barista
 ```
 
 ### Usage
-To-Do
+Add package's service provider to your cofig/app.php
+
+```php
+...
+        Barista\BaristaProvider::class,
+...
+		    'aliases' => [
+...
+
+
+        'Barista' => Barista\Facades\Barista::class,
+    ],
+...
+```
 
 ### Author
 
