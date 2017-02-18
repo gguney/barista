@@ -1,6 +1,6 @@
 # Barista - Form Builder for Laravel
 
-It builds forms for you. Yeah, I know Laravel has built in form support yet this package make the process even simpler.
+It builds forms for you. Yeah, I know Laravel has built in form support yet this package make the process even simpler. It supports build forms from a DataModel.
 
 ### Requirements
 
@@ -13,7 +13,7 @@ $ composer require gguney/barista
 ```
 
 ### Usage
-Add package's service provider to your cofig/app.php
+Add package's service provider to your config/app.php
 
 ```php
 ...
@@ -21,8 +21,6 @@ Add package's service provider to your cofig/app.php
 ...
 		    'aliases' => [
 ...
-
-
         'Barista' => Barista\Facades\Barista::class,
     ],
 ...
