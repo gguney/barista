@@ -42,7 +42,7 @@ class BaristaBuilder{
 
 	public static function close($attributes)
 	{
-		return '<button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></form>';
+		return '<div class="form-group"><button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></div></form>';
 	}
 	public static function buildFromDM($dataModel, $item = null, $errors)
 	{
