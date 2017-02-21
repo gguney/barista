@@ -42,7 +42,10 @@ class BaristaBuilder{
 
 	public static function close($attributes)
 	{
-		return '<div class="form-group"><button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></div></form>';
+		if(config('barista.shouldWrapElement'))
+			return '<div class="'.config('barista.elementWrapper').'"><button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></div></form>';
+		else 
+			return '<button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button></form>';
 	}
 	public static function buildFromDM($dataModel, $item = null, $errors)
 	{
@@ -70,7 +73,6 @@ class BaristaBuilder{
 	}
 	public static function detectInput($dataModel, $attributes, $formField, $item)
 	{
-
 		$foreigns = $dataModel->getForeigns();
 		$foreignsData = $dataModel->getForeignsData();
 		$columns = $dataModel->getColumns();
@@ -91,7 +93,6 @@ class BaristaBuilder{
 			$input .= self::input($name , $value, $attributes);
 		
 		return $input;
-
 	}
 	public static function buildShowFromDM($dataModel, $item)
 	{
@@ -105,7 +106,6 @@ class BaristaBuilder{
 			{
 				$value = ($item->$key != null)?$item->$key : '-';
 				$text = (\Lang::has('general.'.$column->get('label')))?trans('general.'.$column->get('label')):$column->get('label');
-
 				$htmlFields .= '<div class="col-md-4"><strong>'.$text.'</strong> </div>';
 				$htmlFields .= '<div class="col-md-8">';
 				if( $column->get('type') == 'file' )
