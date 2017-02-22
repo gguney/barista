@@ -1,5 +1,5 @@
 <?php 
 return [
-	'shouldWrapElement' => true,
-	'elementWrapper' => 'form-group',
+	'should_wrap_element' => true,
+	'element_wrapper' => 'form-group',
 ];
