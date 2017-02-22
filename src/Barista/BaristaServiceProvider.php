@@ -12,7 +12,6 @@ class BaristaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/Publish/config/barista.php', 'barista'
         );
-
     }
     public function boot()
     {
