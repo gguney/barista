@@ -1,7 +1,6 @@
 <?php 
 namespace Barista;
 
-use ModelCourier\ColumnHelper\Column;
 use Illuminate\Session\Store as Session;
 use Illuminate\Support\Facades\Storage;
 

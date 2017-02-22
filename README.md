@@ -1,6 +1,7 @@
 # Barista - Form Builder for Laravel
 
-It builds forms for you. Yeah, I know Laravel has built in form support yet this package make the process even simpler. It supports build forms from a DataModel.
+Let the Barista makes you a coffee. Just sit and relax. Tell the Barista to build your form and your form will build from scratch. 
+Yeah, I know Laravel has built-in form support yet this package make the process even simpler. It supports build forms from a DataModel. DataModel is included in another package called "model-courier" by gguney.
 
 ### Requirements
 

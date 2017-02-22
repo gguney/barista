@@ -1,8 +1,8 @@
 {
     "name": "gguney/barista",
     "type": "library",
-    "description": "Form Builder",
-    "keywords": ["Form Builder" ],
+    "description": "Improved Form Builder for Laravel. Highly suggested to use with model-courier package.",
+    "keywords": ["Automatic Form Builder" ],
     "homepage": "https://github.com/gokhanguneygg/barista",
     "license": "MIT",
     "minimum-stability": "dev",

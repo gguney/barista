@@ -1,7 +1,7 @@
 <?php
 namespace Barista;
 use Illuminate\Support\ServiceProvider;
-class BaristaProvider extends ServiceProvider
+class BaristaServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.
