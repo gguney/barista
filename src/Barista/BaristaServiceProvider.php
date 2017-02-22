@@ -10,7 +10,7 @@ class BaristaServiceProvider extends ServiceProvider
      */
     public function register(){
         $this->mergeConfigFrom(
-            __DIR__.'/Publish/barista.php', 'barista'
+            __DIR__.'/Publish/config/barista.php', 'barista'
         );
 
     }
