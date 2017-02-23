@@ -40,7 +40,8 @@ return [
     */
 	'show_group_class' => 'row',
 	'show_group_label_class' => 'col-md-4',
-	'show_group_value_class' => 'col-md-8',
+    'show_group_value_class' => 'col-md-8',
+	'show_value_class' => 'control-value',
 
 	'error_block_class' => 'help-block',
 	'information_block_class' => 'help-block',
