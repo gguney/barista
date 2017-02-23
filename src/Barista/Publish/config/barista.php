@@ -38,9 +38,9 @@ return [
     | This part is all about general div classes will be added to your HTML.
     | 
     */
-	'show_group_class' => 'columns',
-	'show_group_label_class' => 'column is-2',
-	'show_group_value_class' => 'column is-10',
+	'show_group_class' => 'row',
+	'show_group_label_class' => 'col-md-4',
+	'show_group_value_class' => 'col-md-8',
 
 	'error_block_class' => 'help-block',
 	'information_block_class' => 'help-block',
@@ -50,7 +50,7 @@ return [
 	'textarea_class' => 'form-control',
 	'input_class' => 'form-control',
 	'checkbox_class' => 'checkbox',
-	'label_class' => 'label',
+	'label_class' => 'control-label',
 
 	/*
     |--------------------------------------------------------------------------
