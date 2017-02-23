@@ -13,10 +13,12 @@ class BaristaServiceProvider extends ServiceProvider
             __DIR__.'/Publish/config/barista.php', 'barista'
         );
     }
+
     public function boot()
     {
         $this->publishes([
             __DIR__.'/Publish/config/barista.php' => config_path('barista.php'),
         ]);
     }
+    
 }

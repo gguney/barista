@@ -1,20 +1,12 @@
 <?php 
 namespace Barista;
 
+use Barista\Contracts\BaristaBuilderContract;
 use Illuminate\Session\Store as Session;
 use Illuminate\Support\Facades\Storage;
 
-/*
-HTTP Verb	Path (URL)			Action (Method)		Route Name
-GET			/nerds				index				nerds.index
-GET			/nerds/create		create				nerds.create
-POST		/nerds				store				nerds.store
-GET			/nerds/{id}			show				nerds.show
-GET			/nerds/{id}/edit	edit				nerds.edit
-PUT/PATCH	/nerds/{id}			update				nerds.update
-DELETE		/nerds/{id}			destroy				nerds.destroy
-*/
-class BaristaBuilder{
+class BaristaBuilder implements BaristaBuilderContract{
+
     /**
      * Reserved methods for form.
      *
@@ -185,7 +177,14 @@ class BaristaBuilder{
 		return $htmlFields;
 	}
 
-
+	/**
+	 * Build table partial from DataModel
+	 * 
+	 * @param  DataModel $dataModel 
+	 * @param  Model $items   
+	 * 
+	 * @return string    
+	 */
 	public static function buildTableFromDM($dataModel, $items)
 	{
 		$htmlFields = "";
@@ -429,6 +428,7 @@ class BaristaBuilder{
 			$attributes['class'] = config('barista.help_block_class');
 		return '<span'.self::ats($attributes).'>'.$text.'</span>';
 	}	
+
 	/**
 	 * Convert array of attributes to HTML attribute string.
 	 * 
