@@ -152,7 +152,8 @@ class BaristaBuilder implements BaristaBuilderContract{
 		$groupLabelClass = config('barista.show_group_label_class');
 		$groupInputClass = config('barista.show_group_value_class');
 		$valueClass = config('barista.show_value_class');
-		
+		$valueTag = config('barista.show_value_tag');
+
 		$cancelButtonClass = config('barista.btn_class').' '.config('barista.btn_cancel').' '.config('barista.btn_additional_class');
 
 		foreach($columns as $key => $column)
@@ -172,7 +173,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 					$htmlFields .= '<img src="'.$file.'" style="width:200px;height:auto"/img>';
 				}
 				else
-					$htmlFields .= '<span class="'.$valueClass.'">'.e($value).'</span>';
+					$htmlFields .= '<'.$valueTag.' class="'.$valueClass.'">'.e($value).'</'.$valueTag.'>';
 				$htmlFields .= '</div>';
 				$htmlFields .= '</div>';
 			}
