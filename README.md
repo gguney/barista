@@ -32,7 +32,7 @@ Then write this line on cmd.
 $ php artisan vendor:publish
 ```
 
-This will publish barista.php config file to your app's config folder.
+This will publish barista.php config file to your app's config folder. So you can change views just by changing this config file.
 
 ### Author
 
@@ -40,4 +40,4 @@ Gökhan Güney - <gokhanguneygg@gmail.com><br />
 
 ### License
 
-Konnex is licensed under the MIT License - see the `LICENSE` file for details
+Barista is licensed under the MIT License - see the `LICENSE` file for details
