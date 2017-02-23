@@ -26,9 +26,9 @@ return [
     | This part is all about general div classes will be added to your HTML.
     | 
     */
-	'group_class' => 'columns',
-	'group_label_class' => 'column is-4',
-	'group_input_class' => 'column is-8',
+	'group_class' => 'form-group',
+	'group_label_class' => '',
+	'group_input_class' => '',
 
 	/*
     |--------------------------------------------------------------------------
@@ -44,13 +44,11 @@ return [
 
 	'error_block_class' => 'help-block',
 	'information_block_class' => 'help-block',
-	//'required_block_class' => 'required',
-	'required_block_class' => 'tag is-warning',
+	'required_block_class' => 'required',
 	'link_class' => '',
 	'select_class' => 'form-control',
 	'textarea_class' => 'form-control',
-	//'input_class' => 'form-control',
-	'input_class' => 'input',
+	'input_class' => 'form-control',
 	'checkbox_class' => 'checkbox',
 	'label_class' => 'label',
 
@@ -62,18 +60,13 @@ return [
     | Button classes for form and datatable.
     | 
     */	
-	//'btn_class' => 'btn',
-	'btn_class' => 'button',
-	//'btn_class_sm' => 'btn-sm',
-	'btn_sm_class' => 'is-small',
-	//'btn_primary' => 'btn-primary',
-	'btn_primary' => 'is-primary',
-	//'btn_success' => 'btn-success',
-	'btn_success' => 'is-success',
-	//'btn_danger' => 'btn-danger',
-	'btn_danger' => 'is-danger',
-	//'btn_info' => 'btn-info',
-	'btn_info' => 'is-info',
+	'btn_class' => 'btn',
+	'btn_sm_class' => 'btn-sm',
+	'btn_primary' => 'btn-primary',
+	'btn_success' => 'btn-success',
+	'btn_danger' => 'btn-danger',
+	'btn_info' => 'btn-info',
+	'btn_cancel' => 'btn-default',
 	'btn_additional_class' => '',
 
 	/*
@@ -86,19 +79,14 @@ return [
     */
 	'table_class' => 'table compact',
 	'thead_class' => 'thead-inverse',
-		//'btn_class' => 'btn',
-	'tbl_btn_class' => 'button',
-	//'btn_class_sm' => 'btn-sm',
-	'tbl_btn_sm_class' => 'is-small',
-	//'btn_primary' => 'btn-primary',
-	'tbl_btn_primary' => 'is-primary',
-	//'btn_success' => 'btn-success',
-	'tbl_btn_success' => 'is-success',
-	//'btn_danger' => 'btn-danger',
-	'tbl_btn_danger' => 'is-danger',
-	//'btn_info' => 'btn-info',
-	'tbl_btn_info' => 'is-info',
-	'tbl_btn_additional_class' => 'is-outlined',
+
+	'tbl_btn_class' => 'btn',
+	'tbl_btn_sm_class' => 'btn-sm',
+	'tbl_btn_primary' => 'btn-primary',
+	'tbl_btn_success' => 'btn-success',
+	'tbl_btn_danger' => 'btn-danger',
+	'tbl_btn_info' => 'btn-info',
+	'tbl_btn_additional_class' => '',
 
 	/*
     |--------------------------------------------------------------------------
