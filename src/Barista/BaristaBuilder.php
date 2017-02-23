@@ -60,7 +60,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 		$cancelButtonClass = config('barista.btn_class').' '.config('barista.btn_cancel').' '.config('barista.btn_additional_class');
 
 		if(config('barista.should_group_form'))
-			return '<div class="'.config('barista.form_group_class').'"><button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button><button class="'.$cancelButtonClass.'" onclick="history.go(-1);">Cancel</button></form></div>';
+			return '<div class="'.config('barista.group_class').'"><button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button><button class="'.$cancelButtonClass.'" onclick="history.go(-1);">Cancel</button></form></div>';
 		else 
 			return '<button type="submit" class="'.$attributes['class'].'">'.$attributes['title'].'</button><button class="'.$cancelButtonClass.'" onclick="history.go(-1);">Cancel</button></form>';
 	}
