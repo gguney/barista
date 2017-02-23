@@ -27,6 +27,13 @@ Add package's service provider to your config/app.php
 ...
 ```
 
+Then write this line on cmd.
+```bash
+$ php artisan vendor:publish
+```
+
+This will publish barista.php config file to your app's config folder.
+
 ### Author
 
 Gökhan Güney - <gokhanguneygg@gmail.com><br />
