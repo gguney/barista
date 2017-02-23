@@ -262,7 +262,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 		if(!isset($attributes['class']))
 			$attributes['class'] = config('barista.checkbox_class');
 		$checked = ($value == 1)?'checked="checked"':'';
-		$input = '<label class="'.config('barista.checkbox_class').'"><input'.self::ats($attributes).' value="'.e($value).'" '.$checked.'/>'.config('barista.checkbox_class').'</label>';
+		$input = '<label class="'.config('barista.checkbox_class').'"><input'.self::ats($attributes).' value="'.e($value).'" '.$checked.'/>'.e($value).'</label>';
 		return $input;
 	}
 
