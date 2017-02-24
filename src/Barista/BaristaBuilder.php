@@ -129,7 +129,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 		else if($attributes['type'] == 'checkbox')
 			$input .= self::checkbox($name , $value, $attributes);
 		else
-			$input .= self::input($name , $value, $attributes);
+			$input .= self::input($name, $value, $attributes);
 		
 		return $input;
 	}
@@ -153,7 +153,6 @@ class BaristaBuilder implements BaristaBuilderContract{
 		$groupInputClass = config('barista.show_group_value_class');
 		$valueClass = config('barista.show_value_class');
 		$valueTag = config('barista.show_value_tag');
-
 		$cancelButtonClass = config('barista.btn_class').' '.config('barista.btn_cancel').' '.config('barista.btn_additional_class');
 
 		foreach($columns as $key => $column)
@@ -299,7 +298,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = config('barista.input_class');
-		$input = '<input'.self::ats($attributes).' value="'.e($value).'"/>';
+		$input = '<input'.self::ats($attributes).((isset($value)) ? ' value="'.e($value).'"' : '').'/>';
 		return $input;
 	}
 
@@ -316,7 +315,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 	{
 		if(!isset($attributes['class']))
 			$attributes['class'] = config('barista.textarea_class');
-		return '<textarea'.self::ats($attributes).'>'.e($value).'</textarea>';
+		return '<textarea'.self::ats($attributes).'>'.((isset($value)) ? e($value) : null).'</textarea>';
 	}
 
 	/**
