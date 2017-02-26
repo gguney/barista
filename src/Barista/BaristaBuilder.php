@@ -391,6 +391,7 @@ class BaristaBuilder implements BaristaBuilderContract{
 			$attributes['class'] = config('barista.label_class');
 		$value = (\Lang::has('general.'.e($value)))?trans('general.'.e($value)):e($value);
 		$required = (isset($attributes['required']) && $attributes['required'] == "required" ) ? self::required():'';
+		unset($attributes['name']);
 		return '<label for="'.$name.'"'.self::ats($attributes).'>'.$value.' '.$required.'</label>';
 	}
 
