@@ -165,10 +165,19 @@ class BaristaBuilder implements BaristaBuilderContract{
 				$htmlFields .= self::label($text,$text);
 				$htmlFields .= '</div>';
 				$htmlFields .= '<div class="'.$groupInputClass.'">';
-				$value = ($item->$key != null)?$item->$key : '-';
-				if( $column->get('type') == 'file' )
+				$value = ($item->$key != null) ? $item->$key : '-';
+				if ($column->get('type') == 'file')
 				{
-					$file = (str_contains($value, ['http', 'https']))?$value:Storage::url($value);
+					$fileSystems = config('filesystems.default');
+					if (str_contains($value, ['http', 'https']) && $fileSystems == 'local'){
+						$file = Storage::url($value);
+					}
+					else if ($fileSystems == 's3'){
+						$file = Storage::disk('s3')->url($value);
+					}
+					else{
+						$file = $value;
+					}
 					$htmlFields .= '<img src="'.$file.'" style="width:200px;height:auto"/img>';
 				}
 				else
