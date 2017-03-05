@@ -225,9 +225,9 @@ class BaristaBuilder implements BaristaBuilderContract
         $showText = (\Lang::has('general.Show')) ? trans('general.Show') : 'Show';
         $actionsText = (\Lang::has('general.Actions')) ? trans('general.Actions') : 'Actions';
 
-        $editButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_primary') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.pull_left') . ' ' . config('barista.tbl_btn_additional_class');
-        $showButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_info') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.pull_left') . ' ' . config('barista.tbl_btn_additional_class');
-        $deleteButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_danger') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.pull_left') . ' ' . config('barista.tbl_btn_additional_class');
+        $editButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_primary') . ' ' . config('barista.tbl_btn_sm_class') .' ' . config('barista.tbl_btn_additional_class'). ' ' . config('barista.tbl_btn_additional_class');
+        $showButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_info') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.tbl_btn_additional_class');
+        $deleteButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_danger') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.tbl_btn_additional_class');
 
         $columns = $dataModel->getColumns();
         $tableFields = $dataModel->getTableFields();
@@ -251,8 +251,8 @@ class BaristaBuilder implements BaristaBuilderContract
                 $htmlFields .= '<td>' . e($value) . '</td>';
             }
             $htmlFields .= '<td class="td w-clearfix" >';
-            $htmlFields .= '<a class="' . $editButtonClasses . '" href="' . $prefixWithSlash . lcfirst($dataModel->getName()) . '/' . $item->id . '/edit">' . $editText . '</a>';
-            $htmlFields .= '<a class="' . $showButtonClasses . '" href="' . $prefixWithSlash . lcfirst($dataModel->getName()) . '/' . $item->id . '">' . $showText . '</a>';
+            $htmlFields .= '<a class="' . $editButtonClasses . ' pull-left" href="' . $prefixWithSlash . lcfirst($dataModel->getName()) . '/' . $item->id . '/edit">' . $editText . '</a>';
+            $htmlFields .= '<a class="' . $showButtonClasses . ' pull-left" href="' . $prefixWithSlash . lcfirst($dataModel->getName()) . '/' . $item->id . '">' . $showText . '</a>';
             $htmlFields .= self::open([
                 'method' => 'DELETE',
                 'item'   => $item,
