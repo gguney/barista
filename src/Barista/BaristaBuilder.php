@@ -85,24 +85,22 @@ class BaristaBuilder implements BaristaBuilderContract
         $formFields = $dataModel->getFormFields();
         $hiddenFields = $dataModel->getHiddenFields();
         foreach ($formFields as $formField) {
-            if (!in_array($formField, $hiddenFields)) {
-                if (isset($columns[$formField])) {
-                    $column = $columns[$formField];
-                }
-                $attributes = $column->getAttributes();
-                $error = ($errors->has($formField)) ? ' ' . config('barista.div_error_class') : '';
-                $htmlFields .= '<div class="' . config('barista.group_class') . $error . '">';
-                $htmlFields .= '<div class="' . config('barista.group_label_class') . '">';
-                $htmlFields .= self::label($attributes['name'], $attributes['label'], $attributes);
-                $htmlFields .= '</div>';
-                $htmlFields .= '<div class="' . config('barista.group_input_class') . '">';
-                $htmlFields .= self::detectInput($dataModel, $attributes, $item);
-                if ($errors->has($formField)) {
-                    $htmlFields .= self::error($errors->first($formField));
-                }
-                $htmlFields .= '</div>';
-                $htmlFields .= '</div>';
+            if (isset($columns[$formField])) {
+                $column = $columns[$formField];
             }
+            $attributes = $column->getAttributes();
+            $error = ($errors->has($formField)) ? ' ' . config('barista.div_error_class') : '';
+            $htmlFields .= '<div class="' . config('barista.group_class') . $error . '">';
+            $htmlFields .= '<div class="' . config('barista.group_label_class') . '">';
+            $htmlFields .= self::label($attributes['name'], $attributes['label'], $attributes);
+            $htmlFields .= '</div>';
+            $htmlFields .= '<div class="' . config('barista.group_input_class') . '">';
+            $htmlFields .= self::detectInput($dataModel, $attributes, $item);
+            if ($errors->has($formField)) {
+                $htmlFields .= self::error($errors->first($formField));
+            }
+            $htmlFields .= '</div>';
+            $htmlFields .= '</div>';
         }
 
         return $htmlFields;
@@ -183,14 +181,15 @@ class BaristaBuilder implements BaristaBuilderContract
                         $file = Storage::url($value);
                     } else {
                         if ($fileSystems == 's3') {
-                            $file = Storage::disk('s3')->url($value);
+                            $file = Storage::disk('s3')
+                                           ->url($value);
                         } else {
                             $file = $value;
                         }
                     }
                     $htmlFields .= '<img src="' . $file . '" style="width:200px;height:auto"/img>';
                 } else {
-                    $htmlFields .= '<' . $valueTag . ' class="' . $valueClass . '">' . e($value) . '</' . $valueTag . '>';
+                    $htmlFields .= '<' . $valueTag . ' class="' . $valueClass . '">' . $value . '</' . $valueTag . '>';
                 }
                 $htmlFields .= '</div>';
                 $htmlFields .= '</div>';
@@ -225,7 +224,7 @@ class BaristaBuilder implements BaristaBuilderContract
         $showText = (\Lang::has('general.Show')) ? trans('general.Show') : 'Show';
         $actionsText = (\Lang::has('general.Actions')) ? trans('general.Actions') : 'Actions';
 
-        $editButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_primary') . ' ' . config('barista.tbl_btn_sm_class') .' ' . config('barista.tbl_btn_additional_class'). ' ' . config('barista.tbl_btn_additional_class');
+        $editButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_primary') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.tbl_btn_additional_class') . ' ' . config('barista.tbl_btn_additional_class');
         $showButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_info') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.tbl_btn_additional_class');
         $deleteButtonClasses = config('barista.tbl_btn_class') . ' ' . config('barista.tbl_btn_danger') . ' ' . config('barista.tbl_btn_sm_class') . ' ' . config('barista.tbl_btn_additional_class');
 
@@ -233,7 +232,6 @@ class BaristaBuilder implements BaristaBuilderContract
         $tableFields = $dataModel->getTableFields();
 
         foreach ($tableFields as $tableField) {
-            $columnName = $columns[$tableField]->get('name');
             $title = $columns[$tableField]->get('label');
             $value = (\Lang::has('general.' . e($title))) ? trans('general.' . e($title)) : e($title);
             $htmlFields .= '<th>' . $value . '</th>';
