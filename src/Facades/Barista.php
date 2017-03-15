@@ -1,5 +1,5 @@
 <?php
-namespace Barista\Facades;
+namespace GGuney\Barista\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -11,7 +11,7 @@ class Barista extends Facade {
 	 * @return class
 	 */
 	protected static function getFacadeAccessor() {
-		return 'Barista\BaristaBuilder';
+		return 'GGuney\Barista\BaristaBuilder';
 	}
 	
 }

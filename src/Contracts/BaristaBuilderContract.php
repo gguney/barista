@@ -1,5 +1,5 @@
 <?php
-namespace Barista\Contracts;
+namespace GGuney\Barista\Contracts;
 
 interface BaristaBuilderContract{
 

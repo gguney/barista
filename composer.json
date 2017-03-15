@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Barista\\": "src/Barista"
+            "GGuney\\Barista\\": "src/"
         }
     }
 }

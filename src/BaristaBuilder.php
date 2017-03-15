@@ -1,7 +1,7 @@
 <?php
-namespace Barista;
+namespace GGuney\Barista;
 
-use Barista\Contracts\BaristaBuilderContract;
+use GGuney\Barista\Contracts\BaristaBuilderContract;
 use Illuminate\Session\Store as Session;
 use Illuminate\Support\Facades\Storage;
 

@@ -1,6 +1,8 @@
 <?php
-namespace Barista;
+namespace GGuney\Barista;
+
 use Illuminate\Support\ServiceProvider;
+
 class BaristaServiceProvider extends ServiceProvider
 {
     /**
@@ -8,17 +10,16 @@ class BaristaServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(){
-        $this->mergeConfigFrom(
-            __DIR__.'/Publish/config/barista.php', 'barista'
-        );
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/Publish/config/barista.php', 'barista');
     }
 
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/Publish/config/barista.php' => config_path('barista.php'),
+            __DIR__ . '/Publish/config/barista.php' => config_path('barista.php'),
         ]);
     }
-    
+
 }
