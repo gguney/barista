@@ -24,28 +24,31 @@ class BaristaBuilder implements BaristaBuilderContract
      * Open a a new form.
      *
      * @param  array $array
+     * @param  array $attributes
      *
      * @return string
      */
-    public static function open($array)
+    public static function open(array $array, array $attributes = null): string
     {
         $method = strtoupper($array['method']);
         $method = (in_array($method, self::$RESERVED_METHODS)) ? $method : 'POST';
         $files = (isset($array['files']) && $array['files'] == true) ? 'enctype="multipart/form-data"' : '';
-
-        switch ($method) {
-            case 'PUT':
-                $action = $array['url'] . '/' . $array['item']->id;
-                break;
-            case 'DELETE':
-                $action = $array['url'] . '/' . $array['item']->id;
-                break;
-            default:
-                $action = $array['url'];
-                break;
+        $action = isset($array['url'])?$array['url']: null;
+        if(!isset($action)){
+            switch ($method) {
+                case 'PUT':
+                    $action = $array['url'] . '/' . $array['item']->id;
+                    break;
+                case 'DELETE':
+                    $action = $array['url'] . '/' . $array['item']->id;
+                    break;
+                default:
+                    $action = $array['url'];
+                    break;
+            }
         }
 
-        return '<form method="POST" action="' . $action . '" ' . $files . '>' . csrf_field() . method_field($method);
+        return '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
     }
 
     /**
@@ -55,7 +58,7 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function close($attributes)
+    public static function close(array $attributes): string
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.btn_class') . ' ' . config('barista.btn_primary') . ' ' . config('barista.btn_additional_class');
@@ -125,7 +128,7 @@ class BaristaBuilder implements BaristaBuilderContract
         $name = $attributes['name'];
         $value = (isset($item)) ? $item->$name : old($name);
         if (isset($foreigns[$attributes['name']]) && $foreignsData[$attributes['name']]) {
-            $input .= self::select($name, $value, $foreignsData[$attributes['name']], $attributes);
+            $input .= self::select($name, $value, $attributes, $foreignsData[$attributes['name']]);
         } else {
             if ($attributes['type'] == 'file') {
                 $input .= self::file($name, $value, $attributes);
@@ -181,8 +184,7 @@ class BaristaBuilder implements BaristaBuilderContract
                         $file = Storage::url($value);
                     } else {
                         if ($fileSystems == 's3') {
-                            $file = Storage::disk('s3')
-                                           ->url($value);
+                            $file = Storage::disk('s3')->url($value);
                         } else {
                             $file = $value;
                         }
@@ -265,6 +267,53 @@ class BaristaBuilder implements BaristaBuilderContract
         return $htmlFields;
     }
 
+    public static function showBar(string $name, string $value)
+    {
+        return '<dt>' . $name . '</dt>' . '<dd>' . $value . '</dd>';
+    }
+
+    public static function formBar(string $name, string $value, array $attributes = null)
+    {
+        $html = '';
+        $html .= self::groupOpen($name, ['errors' => $attributes['errors']]);
+        $html .= self::label($name, $value, $attributes);
+        $attributes['value'] = (isset($attributes['value'])) ? $attributes['value'] : null;
+
+        if($attributes['type'] != 'select'){
+            $html .= self::input($name, $attributes['value'], $attributes, $attributes['errors']);
+        }
+        else{
+            $html .= self::select($name, $attributes['value'], $attributes, $attributes['options']);
+        }
+        $html .= self::error($name, $attributes);
+        $html .= self::groupClose();
+        return $html;
+    }
+
+    /**
+     * Generate group div.
+     *
+     * @param string $name
+     * @param array $attributes
+     * @return string
+     */
+    public static function groupOpen(string $name, array $attributes = null): string
+    {
+        isset($attributes['class']) ?: $attributes['class'] = config('barista.group_class');
+        (isset($attributes['errors']) && $attributes['errors']->has($name)) ? $attributes['class'] .= ' ' . config('barista.error_block_class') : '';
+        return '<div ' . self::ats($attributes) . '>';
+    }
+
+    /**
+     * Close group div.
+     *
+     * @return string
+     */
+    public static function groupClose()
+    {
+        return '</div>';
+    }
+
     /**
      * Generate an HTML checkbox element.
      *
@@ -320,7 +369,7 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.input_class');
         }
-        $input = '<input' . self::ats($attributes) . ((isset($value)) ? ' value="' . e($value) . '"' : '') . '/>';
+        $input = '<input name="' . $name .'" '. self::ats($attributes) . ((isset($value)) ? ' value="' . e($value) . '"' : '') . '/>';
 
         return $input;
     }
@@ -348,18 +397,18 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @param  string $name
      * @param  string $value
-     * @param  array $options
      * @param  array $attributes
+     * @param  array $options
      *
      * @return string
      */
-    public static function select($name, $value, $options, $attributes = null)
+    public static function select($name, $value, $attributes = null, $options)
     {
         $select = "";
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.select_class');
         }
-        $select .= '<select ' . self::ats($attributes) . '>';
+        $select .= '<select name="'.$name.'" ' . self::ats($attributes) . '>';
         foreach ($options as $option) {
             if (isset($value) && $value == $option->id) {
                 $select .= self::option($option->name, $option->id, 'selected');
@@ -438,18 +487,22 @@ class BaristaBuilder implements BaristaBuilderContract
     /**
      * Generate error block.
      *
-     * @param  string $error
+     * @param  string $name
+     * @param  string $errors
      * @param  array $attributes
      *
      * @return string
      */
-    public static function error($error, $attributes = null)
+    public static function error($name, $attributes = null)
     {
         if (!isset($attributes['class'])) {
-            $attributes['class'] = config('barista.error_block_class');
+            $attributes['class'] = config('barista.error_text_class');
         }
-
-        return '<span' . self::ats($attributes) . '>' . $error . '</span>';
+        $errors = $attributes['errors'];
+        if ($errors->has($name)) {
+            return '<span' . self::ats($attributes) . '>' . $errors->first($name) . '</span>';
+        }
+        return '';
     }
 
     /**
@@ -499,7 +552,10 @@ class BaristaBuilder implements BaristaBuilderContract
      */
     private static function toHTMLAttribute($key, $value)
     {
-        return ' ' . $key . '="' . e($value) . '"';
+        if (is_string($value)) {
+            return ' ' . $key . '="' . e($value) . '"';
+        }
+        return '';
     }
 
 }
