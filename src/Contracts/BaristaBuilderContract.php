@@ -121,7 +121,7 @@ interface BaristaBuilderContract
      *
      * @return string
      */
-    public static function select($name, $value, $attributes = null, $options);
+    public static function select($name, $value, $attributes = null);
 
     /**
      * Generate an option for an HTML select.
