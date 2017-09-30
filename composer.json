@@ -23,6 +23,16 @@
         "psr-4": {
             "GGuney\\Barista\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GGuney\\Barista\\BaristaServiceProvider"
+            ],
+            "aliases": {
+                "Barista": "GGuney\\Barista\\Facades\\Barista"
+            }
+        }
     }
 }
 

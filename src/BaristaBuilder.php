@@ -48,7 +48,7 @@ class BaristaBuilder implements BaristaBuilderContract
             }
         }
 
-        return '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
+        return '<form method="POST" id="form" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
     }
 
     /**
@@ -322,6 +322,9 @@ class BaristaBuilder implements BaristaBuilderContract
                     $html .= self::checkbox($option['name'], $option['id'], $attributes);
                 }
                 break;
+            case 'file':
+                $html .= self::file($name, $attributes['value'], $attributes);
+                break;
             default:
                 $html .= self::input($name, $attributes['value'], $attributes, $attributes['errors']);
                 break;
@@ -409,7 +412,7 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.input_class');
         }
-        $input = '<input name="' . $name . '" ' . self::ats($attributes) . ((isset($value)) ? ' value="' . e($value) . '"' : '') . '/>';
+        $input = '<input '. self::ats($attributes) . ' name="' . $name . '" '. ((isset($value)) ? ' value="' . e($value) . '"' : '') . '/>';
 
         return $input;
     }
@@ -492,7 +495,7 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function link($url, $value, $attributes)
+    public static function link($url, $value, $attributeas)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.link_class');
