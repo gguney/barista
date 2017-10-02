@@ -58,7 +58,19 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function close(array $attributes): string
+    public static function close(): string
+    {
+        return '</form>';
+    }
+
+    /**
+     * Close a form with button.
+     *
+     * @param $attributes
+     *
+     * @return string
+     */
+    public static function closeWithButton(array $attributes): string
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.btn_class') . ' ' . config('barista.btn_primary') . ' ' . config('barista.btn_additional_class');
