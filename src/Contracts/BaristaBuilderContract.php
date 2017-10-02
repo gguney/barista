@@ -22,7 +22,16 @@ interface BaristaBuilderContract
      *
      * @return string
      */
-    public static function close(array $attributes): string;
+    public static function close(): string;
+
+    /**
+     * Close a form with button.
+     *
+     * @param $attributes
+     *
+     * @return string
+     */
+    public static function closeWithButton(array $attributes): string;
 
     /**
      * Build Form From a DataModel
