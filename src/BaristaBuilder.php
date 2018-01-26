@@ -48,7 +48,7 @@ class BaristaBuilder implements BaristaBuilderContract
             }
         }
 
-        return '<form method="POST" id="form" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
+        return '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
     }
 
     /**
