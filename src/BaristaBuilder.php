@@ -4,6 +4,8 @@ namespace GGuney\Barista;
 use GGuney\Barista\Contracts\BaristaBuilderContract;
 use Illuminate\Session\Store as Session;
 use Illuminate\Support\Facades\Storage;
+use Mockery\Exception;
+use Psr\Log\InvalidArgumentException;
 
 class BaristaBuilder implements BaristaBuilderContract
 {
@@ -309,7 +311,43 @@ class BaristaBuilder implements BaristaBuilderContract
 
     }
 
-
+    public static function fieldset(string $name, string $label, array $attributes = null)
+    {
+        $html = '';
+        $html .= '<fieldset>';
+        if($attributes['type'] != 'checkbox')
+        {
+            $html .= self::label($name, $label, $attributes);
+        }
+        if ($attributes['errors']->has($name)) {
+            $html .= '<div class="control has-danger">';
+        }else{
+            $html .= '<div class="control">';
+        }
+        $attributes['value'] = (isset($attributes['value'])) ? $attributes['value'] : null;
+        switch ($attributes['type']) {
+            case 'textarea':
+                $html .= self::textarea($name, $attributes['value'], $attributes);
+                break;
+            case 'select':
+                $html .= self::select($name, $attributes['value'], $attributes);
+                break;
+            case 'checkbox':
+                $attributes['checked'] = ($attributes['value'] > 0) ? true: false;
+                $html .= self::checkbox($name, $label, $attributes);
+                break;
+            case 'file':
+                $html .= self::file($name, $attributes['value'], $attributes);
+                break;
+            default:
+                $html .= self::input($name, $attributes['value'], $attributes, $attributes['errors']);
+                break;
+        }
+        $html .= '</div>';
+        $html .= self::fieldsetError($name, $attributes);
+        $html .= '</fieldset>';
+        return $html;
+    }
     public static function formBar(string $name, string $label, array $attributes = null)
     {
         $html = '';
@@ -324,15 +362,8 @@ class BaristaBuilder implements BaristaBuilderContract
                 $html .= self::select($name, $attributes['value'], $attributes);
                 break;
             case 'checkbox':
-                foreach ($attributes['options'] as $option) {
-                    $attributes['checked'] = false;
-                    if (isset($attributes['checked_options']) && in_array($option['id'],
-                            $attributes['checked_options'])
-                    ) {
-                        $attributes['checked'] = true;
-                    }
-                    $html .= self::checkbox($option['name'], $option['id'], $attributes);
-                }
+                $attributes['checked'] = ($attributes['value'] > 0) ? true: false;
+                $html .= self::checkbox($name, $label, $attributes);
                 break;
             case 'file':
                 $html .= self::file($name, $attributes['value'], $attributes);
@@ -385,7 +416,8 @@ class BaristaBuilder implements BaristaBuilderContract
             $attributes['class'] = config('barista.checkbox_class');
         }
         $checked = (isset($attributes['checked']) && ($attributes['checked'] == true)) ? 'checked="checked"' : '';
-        $input = '<label style="padding-left:20px" class="' . config('barista.checkbox_class') . '"><input type="checkbox" name="' . $name . '" ' . self::ats($attributes) . ' value="' . e($value) . '" ' . $checked . '/>' . e($value) . '</label>';
+        unset($attributes['value']);
+        $input = '<label style="margin-left:20px" class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes)  . $checked . '/>' . e($value) . '</label>';
         return $input;
     }
 
@@ -469,6 +501,10 @@ class BaristaBuilder implements BaristaBuilderContract
         if( isset( $value) ){
             (is_array($value)) ? $checkedOptions = $value : $checkedOptions[] =  $value;
         }
+        if(!$options){
+            $error = $name. ' Not Found';
+            new Exception($error);
+        }
         foreach ($options as $option) {
             if ( in_array($option['id'], $checkedOptions))
             {
@@ -477,6 +513,9 @@ class BaristaBuilder implements BaristaBuilderContract
                 $select .= self::option($option['name'], $option['id'], '');
             }
         }
+
+
+
 
         $select .= '</select>';
 
@@ -570,6 +609,24 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
+    public static function fieldsetError($name, $attributes = null)
+    {
+        $errors = $attributes['errors'];
+        if ($errors->has($name)) {
+            return '<p class="help is-danger" >' . $errors->first($name) . '</span>';
+        }
+        return '';
+    }
+
+    /**
+     * Generate error block.
+     *
+     * @param  string $name
+     * @param  string $errors
+     * @param  array $attributes
+     *
+     * @return string
+     */
     public static function error($name, $attributes = null)
     {
         if (!isset($attributes['class'])) {
@@ -619,6 +676,27 @@ class BaristaBuilder implements BaristaBuilderContract
         return $string;
     }
 
+    /**
+     * Postable button.
+     *
+     * @param string $action
+     * @param string $text
+     * @param string $class
+     *
+     * @return string
+     */
+    public static function postButton($action, $text, $class)
+    {
+        $id = str_random(8);
+        $form = '<form id="'.$id.'" action="'.$action.'" method="POST" style="display: none;">';
+        $form .= csrf_field();
+        $form .= '</form>';
+        $form .= '<a href="#" class="'.$class.'"
+                               onclick="document.getElementById(\''.$id.'\').submit()">
+                                   '.$text.'
+                            </a>';
+        return $form;
+    }
     /**
      * Convert key, value pair to HTML Attribute string format.
      *
