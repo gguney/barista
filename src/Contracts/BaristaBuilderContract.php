@@ -180,7 +180,7 @@ interface BaristaBuilderContract
      *
      * @return string
      */
-    public static function error($name, $attributes = null);
+    public static function error($name, $errors, $attributes = null);
 
     /**
      * Generate help block.

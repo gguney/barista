@@ -372,7 +372,7 @@ class BaristaBuilder implements BaristaBuilderContract
                 $html .= self::input($name, $attributes['value'], $attributes, $attributes['errors']);
                 break;
         }
-        $html .= self::error($name, $attributes);
+        $html .= self::error($name,$attributes['errors'], $attributes);
         $html .= self::groupClose();
         return $html;
     }
@@ -417,7 +417,8 @@ class BaristaBuilder implements BaristaBuilderContract
         }
         $checked = (isset($attributes['checked']) && ($attributes['checked'] == true)) ? 'checked="checked"' : '';
         unset($attributes['value']);
-        $input = '<label style="margin-left:20px" class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes)  . $checked . '/>' . e($value) . '</label>';
+        $label = isset( $attributes['label']) ?  $attributes['label'] : '';
+        $input = '<label class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes)  . $checked . '/>' .$label.'</label>';
         return $input;
     }
 
@@ -441,7 +442,20 @@ class BaristaBuilder implements BaristaBuilderContract
         return $file;
 
     }
-
+    /**
+     * Generate an HTML text input lement
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array $attributes
+     *
+     * @return string
+     */
+    public static function text($name, $value = null, $attributes = null)
+    {
+        $attributes['type'] = 'text';
+        return self::input($name, $value, $attributes);
+    }
     /**
      * Generate an HTML input element
      *
@@ -451,7 +465,7 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function input($name, $value, $attributes = null)
+    public static function input($name, $value = null, $attributes = null)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.input_class');
@@ -627,14 +641,13 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function error($name, $attributes = null)
+    public static function error($name, $errors ,$attributes = null)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.error_text_class');
         }
-        $errors = $attributes['errors'];
         if ($errors->has($name)) {
-            return '<span' . self::ats($attributes) . '>' . $errors->first($name) . '</span>';
+            return '<p' . self::ats($attributes) . '>' . $errors->first($name) . '</p>';
         }
         return '';
     }
@@ -653,7 +666,7 @@ class BaristaBuilder implements BaristaBuilderContract
             $attributes['class'] = config('barista.help_block_class');
         }
 
-        return '<span' . self::ats($attributes) . '>' . $text . '</span>';
+        return '<p' . self::ats($attributes) . '>' . $text . '</span>';
     }
 
     /**
@@ -696,6 +709,23 @@ class BaristaBuilder implements BaristaBuilderContract
                                    '.$text.'
                             </a>';
         return $form;
+    }
+    /**
+     * Postable button.
+     *
+     * @param string $name
+     * @param string $value
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public static function submit($name, $value, $attributes = null)
+    {
+        if (!isset($attributes['class'])) {
+            $attributes['class'] = config('barista.submit_button_class');
+        }
+        $value = (\Lang::has('general.' . e($value))) ? trans('general.' . e($value)) : e($value);
+        return '<button type="submit" class="button is-primary ' . $attributes["class"] . '">' . $value . '</button>';
     }
     /**
      * Convert key, value pair to HTML Attribute string format.
