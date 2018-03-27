@@ -442,6 +442,37 @@ class BaristaBuilder implements BaristaBuilderContract
         return $file;
 
     }
+    
+    /**
+     * Generate an HTML password input lement
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array $attributes
+     *
+     * @return string
+     */
+    public static function password($name, $value = null, $attributes = null)
+    {
+        $attributes['type'] = 'password';
+        return self::input($name, $value, $attributes);
+    }
+
+    /**
+     * Generate an HTML email input lement
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array $attributes
+     *
+     * @return string
+     */
+    public static function email($name, $value = null, $attributes = null)
+    {
+        $attributes['type'] = 'email';
+        return self::input($name, $value, $attributes);
+    }
+
     /**
      * Generate an HTML text input lement
      *
@@ -456,6 +487,7 @@ class BaristaBuilder implements BaristaBuilderContract
         $attributes['type'] = 'text';
         return self::input($name, $value, $attributes);
     }
+
     /**
      * Generate an HTML input element
      *
