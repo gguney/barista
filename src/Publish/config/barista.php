@@ -28,8 +28,8 @@ return [
     | Float rules for Barista
     |
     */
-    'pull_left'        => 'pull-left',
-    'pull_right'        => 'pull-right',
+    'pull_left'                => 'pull-left',
+    'pull_right'               => 'pull-right',
 
     /*
     |--------------------------------------------------------------------------
@@ -57,6 +57,7 @@ return [
     'show_value_class'         => 'control-value',
     'show_value_tag'           => 'span',
     'error_block_class'        => 'help-block',
+    'error_text_class'         => 'help is-danger',
     'information_block_class'  => 'help-block',
     'required_block_class'     => 'required',
     'link_class'               => '',

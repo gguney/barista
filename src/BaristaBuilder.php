@@ -32,7 +32,7 @@ class BaristaBuilder implements BaristaBuilderContract
      */
     public static function open(array $array, array $attributes = null): string
     {
-        $method = strtoupper($array['method']);
+        $method = isset($array['method']) ? strtoupper($array['method']) : 'POST';
         $method = (in_array($method, self::$RESERVED_METHODS)) ? $method : 'POST';
         $files = (isset($array['files']) && $array['files'] == true) ? 'enctype="multipart/form-data"' : '';
         $action = isset($array['url']) ? $array['url'] : null;
