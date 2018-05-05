@@ -490,6 +490,21 @@ class BaristaBuilder implements BaristaBuilderContract
     }
 
     /**
+     * Generate an HTML number input lement
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array $attributes
+     *
+     * @return string
+     */
+    public static function number($name, $value = null, $attributes = null)
+    {
+        $attributes['type'] = 'number';
+        return self::input($name, $value, $attributes);
+    }
+
+    /**
      * Generate an HTML input element
      *
      * @param  string $name
