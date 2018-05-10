@@ -415,7 +415,13 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.checkbox_class');
         }
-        $checked = (isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true)) ? 'checked="checked"' : '';
+        $checked = '';
+        if(isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true)){
+            $checked = 'checked="checked"';
+        }
+        if($value == 1 ){
+            $checked = 'checked="checked"';
+        }
         unset($attributes['value']);
         unset($attributes['checked']);
         $label = isset($attributes['label']) ? $attributes['label'] : '';
