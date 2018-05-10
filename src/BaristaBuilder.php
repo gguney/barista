@@ -435,7 +435,7 @@ class BaristaBuilder implements BaristaBuilderContract
     public static function file($name, $value, $attributes = null)
     {
         $attributes['type'] = 'file';
-        $file .= self::input($name, $value, $attributes);
+        $file = self::input($name, $value, $attributes);
         return $file;
     }
 
