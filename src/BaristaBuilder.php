@@ -297,10 +297,10 @@ class BaristaBuilder implements BaristaBuilderContract
     public static function showTable(string $name, $value, array $attributes = null): string
     {
         $row = '<tr>';
-        $row.= '<td style="border: 1px solid black;width:200px "><strong>' .$name. '</strong></td>' ;
-        $row .= '<td style="border: 1px solid black">' ;
+        $row .= '<td style="border: 1px solid black;width:200px "><strong>' . $name . '</strong></td>';
+        $row .= '<td style="border: 1px solid black">';
         if (!is_array($value)) {
-            $row .= $value ;
+            $row .= $value;
         } else {
             $row .= implode(', ', $value);
         }
@@ -315,13 +315,12 @@ class BaristaBuilder implements BaristaBuilderContract
     {
         $html = '';
         $html .= '<fieldset>';
-        if($attributes['type'] != 'checkbox')
-        {
+        if ($attributes['type'] != 'checkbox') {
             $html .= self::label($name, $label, $attributes);
         }
         if ($attributes['errors']->has($name)) {
             $html .= '<div class="control has-danger">';
-        }else{
+        } else {
             $html .= '<div class="control">';
         }
         $attributes['value'] = (isset($attributes['value'])) ? $attributes['value'] : null;
@@ -333,7 +332,7 @@ class BaristaBuilder implements BaristaBuilderContract
                 $html .= self::select($name, $attributes['value'], $attributes);
                 break;
             case 'checkbox':
-                $attributes['checked'] = ($attributes['value'] > 0) ? true: false;
+                $attributes['checked'] = ($attributes['value'] > 0) ? true : false;
                 $html .= self::checkbox($name, $label, $attributes);
                 break;
             case 'file':
@@ -348,6 +347,7 @@ class BaristaBuilder implements BaristaBuilderContract
         $html .= '</fieldset>';
         return $html;
     }
+
     public static function formBar(string $name, string $label, array $attributes = null)
     {
         $html = '';
@@ -362,7 +362,7 @@ class BaristaBuilder implements BaristaBuilderContract
                 $html .= self::select($name, $attributes['value'], $attributes);
                 break;
             case 'checkbox':
-                $attributes['checked'] = ($attributes['value'] > 0) ? true: false;
+                $attributes['checked'] = ($attributes['value'] > 0) ? true : false;
                 $html .= self::checkbox($name, $label, $attributes);
                 break;
             case 'file':
@@ -372,7 +372,7 @@ class BaristaBuilder implements BaristaBuilderContract
                 $html .= self::input($name, $attributes['value'], $attributes, $attributes['errors']);
                 break;
         }
-        $html .= self::error($name,$attributes['errors'], $attributes);
+        $html .= self::error($name, $attributes['errors'], $attributes);
         $html .= self::groupClose();
         return $html;
     }
@@ -415,11 +415,11 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.checkbox_class');
         }
-        $checked = (isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true )) ? 'checked="checked"' : '';
+        $checked = (isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true)) ? 'checked="checked"' : '';
         unset($attributes['value']);
         unset($attributes['checked']);
-        $label = isset( $attributes['label']) ?  $attributes['label'] : '';
-        $input = '<label class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes)  . $checked . '/>' .$label.'</label>';
+        $label = isset($attributes['label']) ? $attributes['label'] : '';
+        $input = '<label class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes) . $checked . '/>' . $label . '</label>';
         return $input;
     }
 
@@ -443,7 +443,7 @@ class BaristaBuilder implements BaristaBuilderContract
         return $file;
 
     }
-    
+
     /**
      * Generate an HTML password input lement
      *
@@ -518,7 +518,9 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.input_class');
         }
-        $input = '<input '. self::ats($attributes) . ' name="' . $name . '" '. ((isset($value)) ? ' value="' . e($value) . '"' : '') . '/>';
+        $disabled = in_array('disabled', $attributes) ? ' disabled="disabled"' : '';
+        $value = (isset($value)) ? ' value="' . e($value) . '"': '';
+        $input = '<input ' . self::ats($attributes) . ' name="' . $name . '"'.$value.$disabled. '/>';
 
         return $input;
     }
@@ -539,7 +541,7 @@ class BaristaBuilder implements BaristaBuilderContract
         }
         $attributes['rows'] = $attributes['rows'] ?? 4;
         $attributes['cols'] = $attributes['cols'] ?? 100;
-        return '<textarea name="'.$name.'"' . self::ats($attributes) . '>' . ((isset($value)) ? e($value) : null) . '</textarea>';
+        return '<textarea name="' . $name . '"' . self::ats($attributes) . '>' . ((isset($value)) ? e($value) : null) . '</textarea>';
     }
 
     /**
@@ -560,23 +562,20 @@ class BaristaBuilder implements BaristaBuilderContract
         $select .= '<select name="' . $name . '" ' . self::ats($attributes) . '>';
         $options = $attributes['options'];
         $checkedOptions = [];
-        if( isset( $value) ){
-            (is_array($value)) ? $checkedOptions = $value : $checkedOptions[] =  $value;
+        if (isset($value)) {
+            (is_array($value)) ? $checkedOptions = $value : $checkedOptions[] = $value;
         }
-        if(!$options){
-            $error = $name. ' Not Found';
+        if (!$options) {
+            $error = $name . ' Not Found';
             new Exception($error);
         }
         foreach ($options as $option) {
-            if ( in_array($option['id'], $checkedOptions))
-            {
+            if (in_array($option['id'], $checkedOptions)) {
                 $select .= self::option($option['name'], $option['id'], 'selected');
             } else {
                 $select .= self::option($option['name'], $option['id'], '');
             }
         }
-
-
 
 
         $select .= '</select>';
@@ -647,7 +646,7 @@ class BaristaBuilder implements BaristaBuilderContract
             $attributes['class'] = config('barista.label_class');
         }
         $value = (\Lang::has('general.' . e($value))) ? trans('general.' . e($value)) : e($value);
-        $required = (isset($attributes['required']) && $attributes['required'] == "required") ? self::required() : '';
+        $required = in_array('required', $attributes) ? self::required() : '';
 
         return '<label for="' . $name . '" class="' . $attributes["class"] . '">' . $value . ' ' . $required . '</label>';
     }
@@ -689,7 +688,7 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function error($name, $errors ,$attributes = null)
+    public static function error($name, $errors, $attributes = null)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.error_text_class');
@@ -749,12 +748,12 @@ class BaristaBuilder implements BaristaBuilderContract
     public static function postButton($action, $text, $class)
     {
         $id = str_random(8);
-        $form = '<form id="'.$id.'" action="'.$action.'" method="POST" style="display: none;">';
+        $form = '<form id="' . $id . '" action="' . $action . '" method="POST" style="display: none;">';
         $form .= csrf_field();
         $form .= '</form>';
-        $form .= '<a href="#" class="'.$class.'"
-                               onclick="document.getElementById(\''.$id.'\').submit()">
-                                   '.$text.'
+        $form .= '<a href="#" class="' . $class . '"
+                               onclick="document.getElementById(\'' . $id . '\').submit()">
+                                   ' . $text . '
                             </a>';
         return $form;
     }
@@ -768,19 +767,24 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function back($url = null, $text = null, $attributes = null)
+    public static function back($url = null, $value = null, $attributes = null)
     {
-        $text  = $text ?? 'Back';
-        $url  = $url ?? '#';
+        $value = $value ?? 'back';
+        if (!isset($attributes['class'])) {
+            $attributes['class'] = config('barista.back_button_class');
+        }
+        $value = (\Lang::has('barista.' . e($value))) ? trans('barista.' . e($value)) : e($value);
+
         $html = '';
-        if(!$action){
-            $html = '<a href="#" onclick="window.history.back()">'.$text.'</a>';
-        }else{
-            $html = '<a href="'.$url.'">'.$text.'</a>';
+        if (!$url) {
+            $html = '<a href="#" onclick="window.history.back()">' . $value . '</a>';
+        } else {
+            $html = '<a href="' . $url . '">' . $value . '</a>';
         }
 
         return $html;
     }
+
     /**
      * Postable button.
      *
@@ -790,14 +794,16 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function submit($name, $value, $attributes = null)
+    public static function submit($name, $value = null, $attributes = null)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.submit_button_class');
         }
-        $value = (\Lang::has('general.' . e($value))) ? trans('general.' . e($value)) : e($value);
-        return '<button type="submit" class="button is-primary ' . $attributes["class"] . '">' . $value . '</button>';
+        $name = $name ?? 'submit';
+        $name = (\Lang::has('barista.' . e($name))) ? trans('barista.' . e($name)) : e($name);
+        return '<button type="submit" class="button is-primary ' . $attributes["class"] . '">' . $name . '</button>';
     }
+
     /**
      * Convert key, value pair to HTML Attribute string format.
      *

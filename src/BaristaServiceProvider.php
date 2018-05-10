@@ -20,6 +20,10 @@ class BaristaServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/Publish/config/barista.php' => config_path('barista.php'),
         ]);
+
+        $this->publishes([
+            __DIR__ . '/Publish/lang/barista.php' => resource_path('lang/en/barista.php'),
+        ]);
     }
 
 }
