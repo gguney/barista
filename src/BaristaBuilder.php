@@ -758,6 +758,29 @@ class BaristaBuilder implements BaristaBuilderContract
                             </a>';
         return $form;
     }
+
+    /**
+     * Back button.
+     *
+     * @param string $url
+     * @param string $text
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public static function back($url = null, $text = null, $attributes = null)
+    {
+        $text  = $text ?? 'Back';
+        $url  = $url ?? '#';
+        $html = '';
+        if(!$action){
+            $html = '<a href="#" onclick="window.history.back()">'.$text.'</a>';
+        }else{
+            $html = '<a href="'.$url.'">'.$text.'</a>';
+        }
+
+        return $html;
+    }
     /**
      * Postable button.
      *
