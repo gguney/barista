@@ -498,6 +498,21 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
+    public static function date($name, $value = null, $attributes = null)
+    {
+        $attributes['type'] = 'date';
+        return self::input($name, $value, $attributes);
+    }
+
+    /**
+     * Generate an HTML number input lement
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array $attributes
+     *
+     * @return string
+     */
     public static function number($name, $value = null, $attributes = null)
     {
         $attributes['type'] = 'number';
@@ -697,6 +712,32 @@ class BaristaBuilder implements BaristaBuilderContract
             return '<p' . self::ats($attributes) . '>' . $errors->first($name) . '</p>';
         }
         return '';
+    }
+
+    /**
+     * Generate error bag block.
+     *
+     * @param  string $errors
+     * @param  array $attributes
+     *
+     * @return string
+     */
+    public static function errorBag($errors, $attributes = null)
+    {
+        $html = '';
+        if($errors->all()){
+            $html = '<div class="error-bag is-danger">';
+            $html .= '<ul>';
+            foreach ($errors->all() as $error){
+                $html .= '<li>'.$error.'</li>';
+            }
+            $html .= '</ul>';
+
+            $html .= '</div>';
+
+        }
+
+        return $html;
     }
 
     /**
