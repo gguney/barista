@@ -49,9 +49,7 @@ class BaristaBuilder implements BaristaBuilderContract
                     break;
             }
         }
-
         $errors = (isset($array['errors']) ? $array['errors'] : null);
-        dd($errors);
         $html = '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method) . self::errorBag($errors);
 
         return $html;
