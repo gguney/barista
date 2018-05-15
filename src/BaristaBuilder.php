@@ -50,7 +50,11 @@ class BaristaBuilder implements BaristaBuilderContract
             }
         }
 
-        return '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method);
+        $errors = (isset($attributes['errors']) ? $attributes['errors'] : null);
+
+        $html = '<form method="POST" action="' . $action . '" ' . $files . self::ats($attributes) . '>' . csrf_field() . method_field($method) . self::errorBag($errors);
+
+        return $html;
     }
 
     /**
@@ -725,7 +729,7 @@ class BaristaBuilder implements BaristaBuilderContract
     public static function errorBag($errors, $attributes = null)
     {
         $html = '';
-        if($errors->all()){
+        if(isset($errors) && $errors->all()){
             $html = '<div class="error-bag is-danger">';
             $html .= '<ul>';
             foreach ($errors->all() as $error){
