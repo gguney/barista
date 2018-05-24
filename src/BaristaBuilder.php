@@ -586,11 +586,12 @@ class BaristaBuilder implements BaristaBuilderContract
             $error = $name . ' Not Found';
             new Exception($error);
         }
+        $field = ($attributes['field']) ?? 'name';
         foreach ($options as $option) {
             if (in_array($option['id'], $checkedOptions)) {
-                $select .= self::option($option['name'], $option['id'], 'selected');
+                $select .= self::option($option[$field], $option['id'], 'selected');
             } else {
-                $select .= self::option($option['name'], $option['id'], '');
+                $select .= self::option($option[$field], $option['id'], '');
             }
         }
 
@@ -788,7 +789,7 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function postButton($action, $text, $class)
+    public static function postButton($action, $text, $class = '')
     {
         $id = str_random(8);
         $form = '<form id="' . $id . '" action="' . $action . '" method="POST" style="display: none;">';
