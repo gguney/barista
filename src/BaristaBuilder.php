@@ -789,13 +789,16 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function postButton($action, $text, $class = '')
+    public static function postButton($action, $text, $attributes = [])
     {
         $id = str_random(8);
         $form = '<form id="' . $id . '" action="' . $action . '" method="POST" style="display: none;">';
         $form .= csrf_field();
+        if(isset($attributes['method'])){
+            $form .= method_field($attributes['method']);
+        }
         $form .= '</form>';
-        $form .= '<a href="#" class="' . $class . '"
+        $form .= '<a href="#" class="' . $attributes['class'] . '"
                                onclick="document.getElementById(\'' . $id . '\').submit()">
                                    ' . $text . '
                             </a>';
