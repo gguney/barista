@@ -824,9 +824,9 @@ class BaristaBuilder implements BaristaBuilderContract
 
         $html = '';
         if (!$url) {
-            $html = '<a href="#" onclick="window.history.back()">' . $value . '</a>';
+            $html = '<a href="#" onclick="window.history.back()" '.self::ats($attributes).'>' . $value . '</a>';
         } else {
-            $html = '<a href="' . $url . '">' . $value . '</a>';
+            $html = '<a href="' . $url . '" '.self::ats($attributes).'>' . $value . '</a>';
         }
 
         return $html;
