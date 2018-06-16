@@ -798,7 +798,7 @@ class BaristaBuilder implements BaristaBuilderContract
             $form .= method_field($attributes['method']);
         }
         $form .= '</form>';
-        $form .= '<a href="#" class="' . $attributes['class'] . '"
+        $form .= '<a href="#" '.self::ats($attributes).'
                                onclick="document.getElementById(\'' . $id . '\').submit()">
                                    ' . $text . '
                             </a>';
