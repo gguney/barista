@@ -418,15 +418,15 @@ class BaristaBuilder implements BaristaBuilderContract
             $attributes['class'] = config('barista.checkbox_class');
         }
         $checked = '';
-        if(isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true)){
+        if (isset($attributes['checked']) && ($attributes['checked'] == 1 || $attributes['checked'] == true)) {
             $checked = 'checked="checked"';
         }
-        if($value == 1 ){
+        if ($value == 1) {
             $checked = 'checked="checked"';
         }
         unset($attributes['checked']);
-        $label = isset($attributes['label']) ? $attributes['label'] : '';
-        $input = '<label class="' . config('barista.checkbox_class') . '"><input style="margin-right:0.25rem"  type="checkbox" name="' . $name . '" ' . self::ats($attributes) . $checked . '/>' . $label . '</label>';
+        $label = isset($attributes['label']) ? $attributes['label'] : self::getText($name);
+        $input = '<label class="' . config('barista.checkbox_class') . '"><input type="checkbox" name="' . $name . '" ' . self::ats($attributes) . $checked . '/>' . $label . '</label>';
         return $input;
     }
 
@@ -535,9 +535,10 @@ class BaristaBuilder implements BaristaBuilderContract
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.input_class');
         }
-        $disabled = in_array('disabled', $attributes) ? ' disabled="disabled"' : '';
         $value = (isset($value)) ? ' value="' . e($value) . '"': '';
-        $input = '<input ' . self::ats($attributes) . ' name="' . $name . '"'.$value.$disabled. '/>';
+        $disabled = in_array('disabled', $attributes) ? ' disabled="disabled"' : '';
+        $attributes['placeholder'] = $attributes['placeholder'] ?? self::getText('placeholder', ['field' => self::getText($name)]);
+        $input = '<input ' . self::ats($attributes) . ' name="' . $name . '"' . $value . $disabled . '/>';
 
         return $input;
     }
@@ -658,15 +659,45 @@ class BaristaBuilder implements BaristaBuilderContract
      *
      * @return string
      */
-    public static function label($name, $value, $attributes = null)
+    public static function label($name, $value = null, $attributes = null)
     {
         if (!isset($attributes['class'])) {
             $attributes['class'] = config('barista.label_class');
         }
-        $value = (\Lang::has('general.' . e($value))) ? trans('general.' . e($value)) : e($value);
+        $value = $value ?? self::getText($name);
         $required = in_array('required', $attributes) ? self::required() : '';
-
         return '<label for="' . $name . '" class="' . $attributes["class"] . '">' . $value . ' ' . $required . '</label>';
+    }
+
+    /**
+     * Translate the field from name.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    private static function getText($name, $valueArray = null)
+    {
+        if($valueArray){
+            return __(self::tKey() . '.' . $name, $valueArray);
+        }
+        return __(self::tKey() . '.' . $name);
+    }
+
+    /**
+     * Get translation key from the config.
+     *
+     * @return string
+     */
+
+    private static function tKey()
+    {
+        $key = '';
+        if (config('barista.trans_file_key')) {
+            $key = '.' . config('barista.trans_file_key');
+        }
+        $key = config('barista.trans_file') . $key;
+        return $key;
     }
 
     /**
@@ -728,11 +759,11 @@ class BaristaBuilder implements BaristaBuilderContract
     public static function errorBag($errors, $attributes = null)
     {
         $html = '';
-        if(isset($errors) && $errors->all()){
+        if (isset($errors) && $errors->all()) {
             $html = '<div class="error-bag is-danger">';
             $html .= '<ul>';
-            foreach ($errors->all() as $error){
-                $html .= '<li>'.$error.'</li>';
+            foreach ($errors->all() as $error) {
+                $html .= '<li>' . $error . '</li>';
             }
             $html .= '</ul>';
 
@@ -794,11 +825,11 @@ class BaristaBuilder implements BaristaBuilderContract
         $id = str_random(8);
         $form = '<form id="' . $id . '" action="' . $action . '" method="POST" style="display: none;">';
         $form .= csrf_field();
-        if(isset($attributes['method'])){
+        if (isset($attributes['method'])) {
             $form .= method_field($attributes['method']);
         }
         $form .= '</form>';
-        $form .= '<a href="#" '.self::ats($attributes).'
+        $form .= '<a href="#" ' . self::ats($attributes) . '
                                onclick="document.getElementById(\'' . $id . '\').submit()">
                                    ' . $text . '
                             </a>';
@@ -824,9 +855,9 @@ class BaristaBuilder implements BaristaBuilderContract
 
         $html = '';
         if (!$url) {
-            $html = '<a href="#" onclick="window.history.back()" '.self::ats($attributes).'>' . $value . '</a>';
+            $html = '<a href="#" onclick="window.history.back()" ' . self::ats($attributes) . '>' . $value . '</a>';
         } else {
-            $html = '<a href="' . $url . '" '.self::ats($attributes).'>' . $value . '</a>';
+            $html = '<a href="' . $url . '" ' . self::ats($attributes) . '>' . $value . '</a>';
         }
 
         return $html;
@@ -847,8 +878,8 @@ class BaristaBuilder implements BaristaBuilderContract
             $attributes['class'] = config('barista.submit_button_class');
         }
         $name = $name ?? 'submit';
-        $name = (\Lang::has('barista.' . e($name))) ? trans('barista.' . e($name)) : e($name);
-        return '<button type="submit" class="button is-primary ' . $attributes["class"] . '">' . $name . '</button>';
+        $value = self::getText($name);
+        return '<button type="submit" class="button is-primary ' . $attributes["class"] . '">' . $value . '</button>';
     }
 
     /**
